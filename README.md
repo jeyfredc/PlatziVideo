@@ -8,7 +8,7 @@
 
 [Scope](#Scope)
 
-[]()
+[Closures](#Closures)
 
 []()
 
@@ -588,3 +588,328 @@ button.onclick = () => player.ejec()
 ```
 
 De esta forma queda modularizado todo el codigo que antes se habia creado
+
+## Closures
+
+Son funciones que regresan una función o un objeto con funciones que mantienen las variables que fueron declaradas fuera de su scope.
+
+Los closures nos sirven para tener algo parecido a variables privadas, característica que no tiene JavaScript por default. Es decir encapsulan variables que no pueden ser modificadas directamente por otros objetos, sólo por funciones pertenecientes al mismo.
+
+para esto modificar **index.html** que esta en la carpeta de **ejercicios** y añadir lo siguiente debajo de la etiqueta de scope
+
+`<li><a href="/ejercicios/clausures.html">clausures</a></li>`
+
+y crear un archivo dentro de la carpeta que se llame **closures.html** y agregar lo siguiente
+
+```
+<html>
+    <head>
+        <title>Closures</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <script>
+            //Clousures
+            //printColor
+
+            let color = 'green';
+
+            function printColor() {
+                console.log(color);
+            }
+
+            printColor();
+        </script>
+    </body>
+</html>
+```
+
+Nuevamente ingresar en el navegador a la ruta http://127.0.0.1:8080/ejercicios/ y seleccionar **closures**
+
+si en la consola del navegador se escribe color aparece la palabra "green" lo que quiere decir que esta disponible globalmente 
+
+![assets-git/15.png](assets-git/15.png)
+
+para evitar que pase eso hay que crear una funcion que se va a llamar automaticamente esto tiene el termino de IIFE(function expression executed immediately) es decir una expresion de funcion ejecutada inmediatamente, se hace creando una funcion y encerrandola dentro de un parentesis como se ve a continuacion
+
+```
+        <script>
+            //Clousures
+            //printColor
+
+            //IIFE
+            (function () {
+                let color = 'green';
+    
+                function printColor() {
+                    console.log(color);
+                }
+    
+                printColor();
+            })();
+        </script>
+```
+
+ahora color ya no puede pasar al scope  global porque quedo dentro de una funcion que se llama asi misma y la palabra let solo esta disponible dentro del bloque de codigo la funcion tiene una variable color y la funcion `printColor` la cual esta dentro de la funcion solamente tiene acceso a la variable color pero lo que este por fuera no tiene acceso a esta variable
+
+![assets-git/16.png](assets-git/16.png)
+
+Ahora estan las funciones que regresan funciones 
+
+la funcion MakeColor recibe como parametro un color, su variable interna que es colorMessage recibe un string y la variable que esta declarada como parametro y luego retorna la funcion con el string y el parametro que se haya pasado por color.
+
+Fuera de la funcion se crea una variable que recibe a la funcion MakeColorPrinter y alli se pasa el parametro del color que para este caso es red y a traves de la constante creada se imprime la funcion
+
+
+```
+        <script>
+            //Clousures
+            //printColor
+
+            //IIFE
+            //(function () {
+            //    let color = 'green';
+
+            //    function printColor() {
+            //        console.log(color);
+            //    }
+
+            //    printColor();
+            //})();
+
+            // Funciones que regresan funciones
+
+            function makeColorPrinter(color) {
+                let colorMessage = `The color is ${color}`;
+
+                return function() {
+                    console.log(colorMessage);
+                };
+            }
+
+            let redColorPrinter = makeColorPrinter('red');
+            console.log(redColorPrinter());
+
+        </script>
+```
+
+De esta forma se tiene acceso al scope al hacer el llamado de la funcion pero no al scope de la variable y a esto se le llama closures
+
+![assets-git/17.png](assets-git/17.png)
+
+Por ultimo estan las variables privadas 
+
+En este ejemplo se crea un array que dentro de este esta el valor count y se puede acceder desde el navegador al hacer un `console.log`
+
+```
+        <script>
+            //Clousures
+            //printColor
+
+            //IIFE
+            //(function () {
+            //    let color = 'green';
+
+            //    function printColor() {
+            //        console.log(color);
+            //    }
+
+            //    printColor();
+            //})();
+
+            // Funciones que regresan funciones
+
+            //function makeColorPrinter(color) {
+            //    let colorMessage = `The color is ${color}`;
+
+            //    return function() {
+            //        console.log(colorMessage);
+            //    };
+            //}
+
+            //let redColorPrinter = makeColorPrinter('red');
+            //console.log(redColorPrinter());
+
+            // Variables "privadas"
+            const counter = {
+                count: 3,
+            };
+
+            console.log(counter.count);
+            
+        </script>
+```
+
+![assets-git/18.png](assets-git/18.png)
+
+y si se quiere reasignar la variable tambien se puede hacer asi 
+
+```
+const counter = {
+    count: 3,
+}
+console.log(counter.count);
+counter.count = 99;
+console.log(counter.count);
+```
+
+![assets-git/21.png](assets-git/21.png)
+
+si se quisiera evitar que se acceda a la variable se hace lo siguiente
+
+crear una funcion que recibe como parametro a n que es un numero y se retornan varias funciones pero por si solo no permite acceder ni cambiar la variable por otro numero
+
+```
+        <script>
+            //Clousures
+            //printColor
+
+            //IIFE
+            //(function () {
+            //    let color = 'green';
+
+            //    function printColor() {
+            //        console.log(color);
+            //    }
+
+            //    printColor();
+            //})();
+
+            // Funciones que regresan funciones
+
+            //function makeColorPrinter(color) {
+            //    let colorMessage = `The color is ${color}`;
+
+            //    return function() {
+            //        console.log(colorMessage);
+            //    };
+            //}
+
+            //let redColorPrinter = makeColorPrinter('red');
+            //console.log(redColorPrinter());
+
+            // Variables "privadas"
+            //const counter = {
+            //    count: 3,
+            //};
+
+            //console.log(counter.count);
+
+            function makeCounter(n) {
+                let count = n;
+
+                return {
+                    increase: function () {},
+                    decrease: function () {},
+                    getCount: function () {},
+                };
+            }
+
+            let counter = makeCounter(5);
+
+            console.log(counter.count);
+            
+        </script>
+```
+
+![assets-git/19.png](assets-git/19.png)
+
+pero para acceder a la variable se puede agregar funcionalidad a cada una y acceder a la variable a traves de la funcion asi 
+
+```
+        <script>
+            //Clousures
+            //printColor
+
+            //IIFE
+            //(function () {
+            //    let color = 'green';
+
+            //    function printColor() {
+            //        console.log(color);
+            //    }
+
+            //    printColor();
+            //})();
+
+            // Funciones que regresan funciones
+
+            //function makeColorPrinter(color) {
+            //    let colorMessage = `The color is ${color}`;
+
+            //    return function() {
+            //        console.log(colorMessage);
+            //    };
+            //}
+
+            //let redColorPrinter = makeColorPrinter('red');
+            //console.log(redColorPrinter());
+
+            // Variables "privadas"
+            //const counter = {
+            //    count: 3,
+            //};
+
+            //console.log(counter.count);
+
+            function makeCounter(n) {
+                let count = n;
+
+                return {
+                    increase: function () {},
+                    decrease: function () {},
+                    getCount: function () {
+                        return count;
+                    },
+                };
+            }
+
+            let counter = makeCounter(5);
+
+            console.log(counter.getCount());
+            
+        </script>
+```
+
+![assets-git/20.png](assets-git/20.png)
+
+completando cada funcion esto es lo que se podria hacer, pero de ninguna forma se podria re asignar la variable como se habia hecho en el ejemplo sin establecer funciones
+
+```
+            function makeCounter(n) {
+                let count = n;
+
+                return {
+                    increase: function () {
+                        return count = count +1 ;
+                    },
+                    decrease: function () {
+                        return count = count -1 ;
+                    },
+                    getCount: function () {
+                        return count;
+                    },
+                };
+            }
+
+            let counter = makeCounter(5);
+
+            console.log('The count is ', counter.getCount());
+            counter.increase();
+            console.log('The count is ', counter.getCount());
+            counter.decrease();
+            counter.decrease();
+            counter.decrease();
+            counter.decrease();
+            console.log('The count is ', counter.getCount());
+
+            counter.count = 0;
+            console.log('The count is ', counter.getCount());
+```
+
+La razon de que aparezca dos veces el numero 2 es porque la variable no se dejo re asignar y con `counter.increase()` aumento la primer vez el numero a 6 y luego se ejecuto cuatros veces `counter.decrease();` y por eso la funcion quedo en 2
+
+![assets-git/22.png](assets-git/22.png)
