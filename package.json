@@ -1,0 +1,16 @@
+{
+  "name": "Curso-javascript-profesional",
+  "version": "1.0.0",
+  "description": "PlatziVideo",
+  "license": "MIT",
+  "author": "Jeyfred Calderon <jeyfredc@gmail.com>",
+  "keywords": [
+    "platzi"
+  ],
+  "scripts": {
+    "start": "live-server"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

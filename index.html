@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>PlatziMediaPlayer.js</title>
+    <link
+      rel="stylesheet"
+      href="https://necolas.github.io/normalize.css/8.0.1/normalize.css"
+    />
+    <link rel="stylesheet" href="./assets/index.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>PlatziMediaPlayer.js</h1>
+      <p>An extensible media player.</p>
+    </header>
+
+    <main class="container">
+      <video class="movie">
+        <source src="./assets/BigBuckBunny.mp4" />
+      </video>
+
+      <button>Play/Pause</button>
+    </main>
+
+    <script>
+      
+      class MediaPlayer {
+        constructor(config){
+          this.media = config.movie;
+        }
+        
+        play(){
+          this.media.play();
+        }
+        
+        pause(){
+          this.media.pause();
+        }
+        
+        ejec(){
+          if(this.media.paused){
+            this.play();
+          }else{
+            this.pause();
+        }
+      }
+    }
+      
+      const video = document.querySelector('video');
+      const button = document.querySelector('button');
+      const player = new MediaPlayer({ movie : video})
+      
+      button.onclick = () => player.ejec()
+      
+    </script>
+  </body>
+</html>
