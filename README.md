@@ -184,7 +184,7 @@ Si se comentara la linea `//button.onclick = () => video.play();` y luego se col
 
 Este error se muestra para evitar que en los navegadores el video se empiece a reproducir solo
 
-Descomentando la linea que puede ejecutar el usuario al hacer play en el navegador por el momento no se va a poder pausar porque aun no se ha implementado una funcion que haga esto y que haga mas extensible el codigo para esto se crea una clase y el codigo queda de la siguiente forma
+Descomentando la linea, el usuario puede dar click en el boton play en el navegador pero hay que buscar que se haga mas extensible el codigo para esto se crea una clase y el codigo queda de la siguiente forma
 
 1. Se crea la clase MediaPlayer
 
