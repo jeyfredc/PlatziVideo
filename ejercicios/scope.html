@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Scope</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <script>
+            //Global Scope
+            //var message = 'Hello, Friends';
+            ////Function Scope
+            //function printNumbers() {
+            //    var i;
+            //    for(i = 0; i<10; i++){
+            //        function eventuallyPrintNumber(n){
+            //            setTimeout(function(){
+            //                console.log(n);
+            //            }, 1000);
+            //        }
+            //        eventuallyPrintNumber(i)
+            //    }
+            //}
+
+            //printNumbers();
+            //Block Scope
+
+            function printNumbers() {
+                for(let i = 0; i<10; i++){
+                    setTimeout(function(){
+                        console.log(i);
+                    }, 1000);
+                }
+            }
+
+            printNumbers();
+
+            //Module Scope
+        </script>
+    </body>
+</html>

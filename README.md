@@ -6,7 +6,7 @@
 
 [Cómo llega un script al navegador](#Cómo-llega-un-script-al-navegador)
 
-[]()
+[Scope](#Scope)
 
 []()
 
@@ -344,3 +344,245 @@ y ahora en **index.html** en la etiqueta `<script>` se añade el atributo src y 
 ```
 
 Confirmar que todo siga funcionando como en el capitulo anterior con el reto de dar play y pausar el video
+
+## Scope
+
+El Scope o ámbito es lo que define el tiempo de vida de una variable en la que esta existe, en que partes de nuestro código pueden ser usadas.
+
+**Global Scope**
+
+Variables disponibles de forma global se usa la palabra var, son accesibles por todos los scripts que se cargan en la página. Aquí hay mucho riesgo de sobreescritura.
+
+**Function Scope**
+
+Variables declaradas dentro de una función sólo visibles dentro de ella misma (incluyendo los argumentos que se pasan a la función).
+
+**Block Scope**
+
+Variables definidas dentro de un bloque, por ejemplo variables declaradas dentro un loop while o for. Se usa let y const para declarar este tipo de variables.
+
+**Module Scope**
+
+Cuando se denota un script de tipo module con el atributo type="module las variables son limitadas al archivo en el que están declaradas.
+
+Para ver esto crear una carpeta que se llame **ejercicios** y dentro de estos crear otro archivo **index.html** y **scope.html**
+
+dentro de **index.html** agregar lo siguiente
+
+```
+<head>
+    <html>
+      <title>Curso Profesional de JavaScript: Ejercicios</title>
+    </head>
+  
+    <body>
+      <a href="/">Go back</a>
+      <h1>Índice</h1>
+      <ol>
+        <li><a href="/ejercicios/scope.html">Scope</a></li>
+      </ol>
+    </body>
+  </html>
+```
+
+dentro de **scope.html** agregar lo siguiente
+
+```
+<html>
+    <head>
+        <title>Scope</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <script>
+            //Global Scope
+            //Function Scope
+            //Block Scope
+            //Module Scope
+        </script>
+    </body>
+</html>
+```
+
+
+En el navegador colocar la siguiente ruta http://127.0.0.1:8080/ejercicios/ y dentro de esta seleccionar **Scope** se vera algo asi abriendo la consola con  **ctrl + shift + i**
+
+![assets-git/10.png](assets-git/10.png)
+
+Si dentro del archivo scope se crea una variable message que diga `Hello,Friends`
+
+```
+        <script>
+            //Global Scope
+            var message = 'Hello, Friends';
+            //Function Scope
+            //Block Scope
+            //Module Scope
+        </script>
+```
+
+mientras tanto en la consola del navegador se escribe window.message
+
+va a aparecer lo que se guardo dentro de la variable pero esta aparece porque esta en el scope global. window hace referencia al ambito global.
+
+Toda variable que este por fuera de un bloque de codigo va a quedar en el scope global
+
+![assets-git/11.png](assets-git/11.png)
+
+Con la palabra var ocurre algo particular y es que se declara globalmente ahora el ejemplo sera para una Function Scope
+
+```
+        <script>
+            //Global Scope
+            //var message = 'Hello, Friends';
+            //Function Scope
+            function printNumbers() {
+                for(var i = 0; i<10; i++){
+                    setTimeout(function(){
+                        console.log(i);
+                    }, 1000);
+                }
+            }
+
+            printNumbers();
+            //Block Scope
+            //Module Scope
+        </script>
+```
+
+Con esta declaracion lo que se esperaria es que el navegador imprima los numeros del 1 al 9 despues de 1 segundo, la funcion setTimeOut recibe 2 parametros una funcion y un tiempo en milisegundos pero lo que ocurre a continuacion es que se imprime la iteracion 10 vecesy no muestra lo numeros del 0 al 9
+
+![assets-git/12.png](assets-git/12.png)
+
+esto pasa porque al utilizar la palabra var es como si i no valiera nada pero al asignarse, automaticamente hace el recorrido y llega a 10 sin mostrar el resto de numeros que se quieren imprimir, es decir que los numeros se reasignan en i en cada iteracion pero no muestra su recorrido
+
+```
+var i;
+function printNumbers() {
+    for(i = 0; i<10; i++){
+        setTimeout(function(){
+            console.log(i);
+        }, 1000);
+    }
+}
+```
+
+para solucionarlo hay que crear una **Function Scope** interna que imprima cada iteracion que hace sobre el ciclo de esta forma para que al hacer el recorrido en cada iteracion permita pasar por el numero 0, termine de ejecutar la funcion y luego continue y despues pase por el numero 1 y hace hasta llegar a las 10 iteraciones
+
+```
+        <script>
+            //Global Scope
+            var message = 'Hello, Friends';
+            //Function Scope
+            function printNumbers() {
+                var i;
+                for(i = 0; i<10; i++){
+                    function eventuallyPrintNumber(n){
+                        setTimeout(function(){
+                            console.log(n);
+                        }, 1000);
+                    }
+                    eventuallyPrintNumber(i)
+                }
+            }
+
+            printNumbers();
+            //Block Scope
+            //Module Scope
+        </script>
+```
+
+![assets-git/13.png](assets-git/13.png)
+
+Existen 2 palabras reservadas en JavaScript que operan sobre el **Block Scope** y se llaman `let` que sirve para asignacion de variables y `const` para crear constantes en el ejemplo a continuacion no se va a usar `const` porque se generaria un error al iterar por ser una constante 
+
+```
+        <script>
+            //Global Scope
+            //var message = 'Hello, Friends';
+            ////Function Scope
+            //function printNumbers() {
+            //    var i;
+            //    for(i = 0; i<10; i++){
+            //        function eventuallyPrintNumber(n){
+            //            setTimeout(function(){
+            //                console.log(n);
+            //            }, 1000);
+            //        }
+            //        eventuallyPrintNumber(i)
+            //    }
+            //}
+
+            //printNumbers();
+            //Block Scope
+
+            function printNumbers2() {
+                for(let i = 0; i<10; i++){
+                    setTimeout(function(){
+                        console.log(i);
+                    }, 1000);
+                }
+            }
+
+            printNumbers2();
+
+            //Module Scope
+        </script>
+```
+
+En este caso con let cada vez que se ejecuta una iteracion ocurre dentro del bloque de codigo, y al iterar y hacer el recorrido es como si se creara un nuevo bloque y por tanto se imprimen los numeros del 0 al 9 
+
+![assets-git/13.png](assets-git/13.png)
+
+Ahora en el caso de Modul Scope, existe una forma de proteger o encapsular las variables que existian en la clase MediaPlayer para esto en el archivo **index.html** del proyecto escribir `type="module"` en el script asi dejando la ruta que estaba llamando el archivo
+
+`<script type="module" src="/assets/index.js"></script>`
+
+En el navegador antes se podia acceder a los atributos video, MediaPlayer, etc. pero utilizando module no permite mas el acceso a estas variables, la ejecucion del video va a seguir siendo la misma, pero esto se creo para empezar a modularizar partes de un archivo en varios y de esta forma tener codigo mas legible.
+
+Para esto crear un nuevo archivo en la carpeta **assets** que se llame **MediaPlayer.js** y pasar todo lo que corresponde a la clase MediaPlayer.
+
+Despues mediante la palabra `export default MediaPlayer;` se va a exportar el archivo hacia otro que lo llame en la ruta
+
+```
+class MediaPlayer {
+    constructor(config){
+      this.media = config.movie;
+    }
+    
+    play(){
+      this.media.play();
+    }
+    
+    pause(){
+      this.media.pause();
+    }
+    
+    ejec(){
+      if(this.media.paused){
+        this.play();
+      }else{
+        this.pause();
+    }
+  }
+}
+
+export default MediaPlayer;
+```
+
+Dejando esto, **index.js** quedaria de la siguiente forma donde se utiliza la palabra `import MediaPlayer from './MediaPlayer.js'` para llamar al otro archivo y poder hacer uso de este.
+
+```
+import MediaPlayer from './MediaPlayer.js'
+
+const video = document.querySelector('video');
+const button = document.querySelector('button');
+const player = new MediaPlayer({ movie : video})
+
+button.onclick = () => player.ejec()
+```
+
+De esta forma queda modularizado todo el codigo que antes se habia creado
