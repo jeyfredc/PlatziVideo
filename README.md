@@ -14,7 +14,7 @@
 
 [this](#this)
 
-[]()
+[Los métodos call, apply y bind](#Los-métodos-call-apply-y-bind)
 
 []()
 
@@ -1030,7 +1030,7 @@ No se puede asignar un valor a this directamente y este depende de en que scope 
 
 - Cuando llamamos a this desde una **“clase”**, se hace referencia a la instancia generada por el constructor.
 
-Abrir **index.js** y comentar la instalancia de plugins asi para no utilizar el plugin adaptado en la clase anterior que era hacer autoplay al recargar la pagina
+Abrir **index.js** y comentar la instancia de plugins asi para no utilizar el plugin adaptado en la clase anterior que era hacer autoplay al recargar la pagina
 
 ```
 import MediaPlayer from './MediaPlayer.js'
@@ -1284,3 +1284,487 @@ Ahora el navegador solo ejecuta **Hola soy** y es porque accion no se esta llama
 ```
 
 En este caso se crea una clase y en el constructor se le pasa el parametro name, al pasar `this.name = name;` significa que al objeto Person se le esta asignando un atributo name que es igual al constructor, despues se crea el metodo `saludar()` y este metodo tiene acceso a al atributo de la clase, posteriormente despues de cerrar la clase se crea un objeto carlos que es de tipo Person que despues a traves del objeto carlos llama al metodo saludar y lo ejecuta. En este caso **this** se refiere a la instancia del objeto el cual es carlos mas no a la clase que es Person
+
+## Los métodos call, apply y bind
+
+Estas funciones nos sirven para establecer el valor de this, es decir cambiar el contexto que se va usar cuando la función sea llamada.
+
+Las funciones **call**, **apply** y **bind** son parte del prototipo Function. Toda función usa este prototipo y por lo tanto tiene estas tres funciones.
+
+- **functionName.call().** Ejecuta la función recibiendo como primer argumento el this y los siguientes son los argumentos que recibe la función que llamó a call.
+
+- **functionName.apply().** Ejecuta la función recibiendo como primer argumento el this y como segundo un arreglo con los argumentos que recibe la función que llamó a apply.
+
+- **functionName.bind().** Recibe como primer y único argumento el this. No ejecuta la función, sólo regresa otra función con el nuevo this integrado.
+
+dentro de la carpeta de **ejercicios** crear un archivo llamado **call-apply-bind.html** con lo siguiente
+
+```
+<html>
+    <head>
+        <title>call-apply-bind</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+<!--         <ul>
+            <li><button class="call-to-action">Aprender</button></li>
+            <li><button class="call-to-action">Aprender Más</button></li>
+            <li><button class="call-to-action">¡Nunca parar de Aprender!</button></li>
+          </ul> -->
+      
+
+        <script>
+        // Establece `this` usando `call`
+        // Establece `this` usando `call` y pasar argumentos a la función
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        // Establecer `this` en una nueva función usando `bind`
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+    </body>
+</html>
+```
+
+y en el **index.html** de la carpeta **ejercicios** añadir la siguiente linea de codiga despues de this
+
+`<li><a href="/ejercicios/call-apply-bind.html">call-apply-bind</a></li>`
+
+Ahora en el navegador abrir la ruta http://127.0.0.1:8080/ejercicios/ y seleccionar call-apply-bind y abrir la consola 
+
+- Establece `this` usando `call`
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        // Establecer `this` en una nueva función usando `bind`
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+```
+
+![assets-git/29.png](assets-git/29.png)
+
+1. Se crea la funcion saludar pasando en la funcion un console.log que llama a 2 argunmentos a traves de this
+
+2. se crea un objeto con atributos
+
+3. todas las funciones tienen acceso a los metodos call, apply y bind.
+
+4. El metodo call tiene acceso a this que en este caso this es el objeto jeyfred
+
+- Establece `this` usando `call` y pasar argumentos a la función
+
+Las funciones tambien pueden recibir argumentos para esto se va a crear una nueva funcion caminar, la cual recibe los parametros de metros y direccion y a traves de un `console.log` se imprimen, en este caso se de usar la funcion **caminar.call(this, argumentos)** pasando como primer parametro a this y como segundo parametro los parametros de la funcion caminar
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        // Establecer `this` en una nueva función usando `bind`
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+```
+
+![assets-git/30.png](assets-git/30.png)
+
+- Establece `this` usando `apply` y pasar argumentos a la función
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        caminar.apply(jeyfred, [800, 'noroccidente']);
+        // Establecer `this` en una nueva función usando `bind`
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+```
+
+![assets-git/31.png](assets-git/31.png)
+
+el metodo apply hace lo mismo hace lo mismo que call pero en primer lugar recibe a this y los parametros los recibe por medio de una array `caminar.apply(this, [metros, direccion]);`
+
+Tambien se puede establecer a traves de un array de esta forma
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+```
+
+![assets-git/31.png](assets-git/31.png)
+
+Se crea una constante valores que contiene un arrray con los metros y la direccion y se manda a llamar a traves de la constante
+
+- Establecer `this` en una nueva función usando `bind`
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        saludar.bind(camilo);
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+```
+
+Al crear una nueva constante con un array en este caso y utilizar el metodo bind el navegador no va a mostrar nada 
+
+![assets-git/31.png](assets-git/31.png)
+
+y es porque bind fuynciona a traves de una funcion de esta forma se corrige asi 
+
+```
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+```
+
+tambien se puede establecer la funcion caminar de la siguiente forma
+
+```
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo);
+        camiloCamina(1000, 'este');
+```
+
+![assets-git/32.png](assets-git/32.png)
+
+y la otra forma de guardar los valores 1000 y 'este' es pasandolos a los parametros de la funcion bind
+
+```
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 2000, 'este');
+        camiloCamina();
+```
+
+![assets-git/33.png](assets-git/33.png)
+
+y la ultima forma de guardar es usando la funcion y los parametros del metodo asi 
+
+```
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 3000);
+        camiloCamina('oeste');
+```
+
+![assets-git/34.png](assets-git/34.png)
+
+- Cuándo es útil usar uno de estos métodos
+
+Cada uno funciona ligeramente **call** y **apply** van a establecer el **this** y van a llamar la funcion inmediatamente.
+
+**bind** va a crear una nueva funcion donde **this** va a estar guardado pero despues toca guardar esa funcion
+
+Cada uno de los metodos tiene formas diferentes de pasar argumentos en casos de que sea necesario.
+
+Hay veces que existen objetos que se parecen a otros por ejemplo cuando se usa un **getElementByClassName** del **DOM(Document Object Model)** lo que regresa es un objeto de tipo **Node list**, No es un array, por lo tanto no tiene todos los metodos que tiene un array, no hay un **for each**.
+
+Descomentar las etiquetas que estan en el html que estan dentro de la etiqueta `<ul></ul>`, al quedar descomentados ya aparecen en el navegador pero estos no hacen nada 
+
+```
+<html>
+    <head>
+        <title>call-apply-bind</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <ul>
+            <li><button class="call-to-action">Aprender</button></li>
+            <li><button class="call-to-action">Aprender Más</button></li>
+            <li><button class="call-to-action">¡Nunca parar de Aprender!</button></li>
+          </ul>
+      
+
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 3000);
+        camiloCamina('oeste');
+        // Cuándo es útil usar uno de estos métodos
+        </script>
+    </body>
+</html>
+```
+
+![assets-git/35.png](assets-git/35.png)
+
+se les quiere dar funcionalidad, dentro de las etiquetas de script añadir lo siguiente
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 3000);
+        camiloCamina('oeste');
+        // Cuándo es útil usar uno de estos métodos
+        const buttons = document.getElementsByClassName("Call-to-action");
+        buttons.forEach(button => {
+            button.onclick = () => alert("Nunca pares de aprender!")
+        })
+
+        </script>
+```
+
+Se establecio una constante buttons, que llama a los elementos por la clase y luego los pone a las escucha para que al hacer click sobre ellos salga un mensaje de alerta que diga Nunca pares de aprender pero como este elemento no es un array no va a funcionar en el navegador porque es un NodeList
+
+![assets-git/36.png](assets-git/36.png)
+
+- NodeList
+
+Los NodeList se parecen a los arrays y tienen una propiedad que se llama lenght y esto es suficiente para saber que se puede arreglar llamando un foreach a traves de un array.
+
+Porque forEach es una propiedad del prototype al cual se le puede cambiar el `this` usando `call` para esto se comenta la funcion anterior y se establece la nueva a traves de un array y en este caso todos los botones van a funcionar
+
+```
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 3000);
+        camiloCamina('oeste');
+        // Cuándo es útil usar uno de estos métodos
+        const buttons = document.getElementsByClassName("Call-to-action");
+        //buttons.forEach(button => {
+        //    button.onclick = () => alert("Nunca pares de aprender!")
+        //})
+
+        // NodeList
+
+        Array.prototype.forEach.call(buttons, button => {
+                button.onclick = () => alert("Nunca pares de aprender!")
+            })
+
+        </script>
+```
+
+Lo que sucedio es que se llamo la funcion `Array.prototype.forEach`, llamando como contexto a `this` es decir a `buttons` como contexto
+
+![assets-git/37.png](assets-git/37.png)
+
+![assets-git/38.png](assets-git/38.png)
+
+![assets-git/39.png](assets-git/39.png)

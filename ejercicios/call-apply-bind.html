@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>call-apply-bind</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <ul>
+            <li><button class="call-to-action">Aprender</button></li>
+            <li><button class="call-to-action">Aprender Más</button></li>
+            <li><button class="call-to-action">¡Nunca parar de Aprender!</button></li>
+          </ul>
+      
+
+        <script>
+        // Establece `this` usando `call`
+
+        function saludar(){
+            console.log(`Hola soy ${this.name} ${this.lastname}`);
+        }
+
+        const jeyfred = {
+            name : 'Jeyfred',
+            lastname : 'Calderon',
+        }
+
+        saludar.call(jeyfred)
+
+        // Establece `this` usando `call` y pasar argumentos a la función
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia el ${direccion}`);
+        }
+
+        caminar.call(jeyfred, 400 , 'Sur');
+
+        // Establece `this` usando `apply` y pasar argumentos a la función
+
+        //caminar.apply(jeyfred, [800, 'noroccidente']);
+
+        const valores = [800, 'noroccidente'];
+
+        caminar.apply(jeyfred, valores);
+
+        // Establecer `this` en una nueva función usando `bind`
+        const camilo = { name: 'Camilo', lastname: 'Reyes'}
+        const camiloSaluda = saludar.bind(camilo);
+
+        camiloSaluda();
+
+        const camiloCamina = caminar.bind(camilo, 3000);
+        camiloCamina('oeste');
+        // Cuándo es útil usar uno de estos métodos
+        const buttons = document.getElementsByClassName("Call-to-action");
+        //buttons.forEach(button => {
+        //    button.onclick = () => alert("Nunca pares de aprender!")
+        //})
+
+        // NodeList
+
+        Array.prototype.forEach.call(buttons, button => {
+                button.onclick = () => alert("Nunca pares de aprender!")
+            })
+
+        </script>
+    </body>
+</html>
