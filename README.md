@@ -12,7 +12,7 @@
 
 [El primer plugin](#El-primer-plugin)
 
-[]()
+[this](#this)
 
 []()
 
@@ -1017,3 +1017,270 @@ button.onclick = () => player.ejec()
 por ultimo abrir el navegador y verificar que el video este sin sonido y se reproduzca automaticamente
 
 **Reto:** Añadir un nuevo boton a la interfaz el cual es el boton de **mute**, para que cuando el video comience el usuario pueda dar unmute y pueda escuchar el video
+
+## this
+
+this se refiere a un objeto, ese objeto es el que actualmente está ejecutando un pedazo de código.
+
+No se puede asignar un valor a this directamente y este depende de en que scope nos encontramos:
+
+- Cuando llamamos a this en el **Global Scope** o **Function Scope**, se hace referencia al objeto window. A excepción de cuando estamos en **strict mode** que nos regresará undefined.
+
+- Cuando llamamos a this desde una función que está contenida en un objeto, this se hace referencia a ese objeto.
+
+- Cuando llamamos a this desde una **“clase”**, se hace referencia a la instancia generada por el constructor.
+
+Abrir **index.js** y comentar la instalancia de plugins asi para no utilizar el plugin adaptado en la clase anterior que era hacer autoplay al recargar la pagina
+
+```
+import MediaPlayer from './MediaPlayer.js'
+import AutoPlay from './plugins/AutoPlay.js'
+
+const video = document.querySelector('video');
+const button = document.querySelector('button');
+const player = new MediaPlayer({ movie : video, //plugins : [new AutoPlay()] 
+})
+
+button.onclick = () => player.ejec()
+```
+
+Ahora en la carpeta de **ejercicios** crear un nuevo archivo que se llame **this.html** y agregar lo siguiente 
+
+```
+<html>
+    <head>
+        <title>This</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <h1>
+            <code>this</code> se refiere a un objeto. Ese objeto es el que actualmente está ejecutando un pedazo de código</h1>
+
+        <script>
+            // this en el scope global
+            //this en el scope de una funcion
+            // this en el scope de una funcion en strict mode
+            // this en el contexto de un objeto
+            // this cuando sacamos una funcion de un objeto
+            // this en el contexto de una clase
+        </script>
+    </body>
+</html>
+```
+
+y en el **index.html** de la carpeta ejercicios añadir la siguiente linea de codiga despues de closures
+
+`<li><a href="/ejercicios/this.html">this</a></li>`
+
+Ahora en el navegador abrir la ruta http://127.0.0.1:8080/ejercicios/ y seleccionar this y abrir la consola 
+
+**this** es un concepto que tienen muchos lenguajes de programacion, sobre todo los que son orientados a objetos.
+
+this se refiere a la instancia de una clase cuando se crea un objeto y generalmente se escribe **this.nombredepropiedad** o **this.nombredemetodo** lo que quiere decir que ese objeto tiene acceso ya sea a una propiedad o a un metodo.
+
+En JavaScript ocurre lo mismo pero tambien hay otros contextos que se deben conocer para saber en que momento this se comporta de una manera u obtiene valores diferentes 
+
+- this en el scope global -> es cuando esta entre etiquetas, no hay ninguna funcion, no hay ningun objeto 
+
+en el archivo **this.html** entre los scripts empezar a colocar 
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            // this en el scope de una funcion en strict mode
+            // this en el contexto de un objeto
+            // this cuando sacamos una funcion de un objeto
+            // this en el contexto de una clase
+        </script>
+```
+
+![assets-git/24.png](assets-git/24.png)
+
+sale que this es un objeto y que ese objeto es window, el navegador cuando this esta en el contexto global siempre lo va a asignar a window
+
+- this en el scope de una funcion
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            function whoIsThis(){
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);
+            // this en el scope de una funcion en strict mode
+            // this en el contexto de un objeto
+            // this cuando sacamos una funcion de un objeto
+            // this en el contexto de una clase
+        </script>
+```
+
+![assets-git/25.png](assets-git/25.png)
+
+En este caso el motor de JavaScript tambien lo asigna a window porque esta llamando la funcion directamente
+
+- this en el scope de una funcion en strict mode y este se enciende con esta sintaxis `"use strict",`, en este caso se coloca dentro de la funcion
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            function whoIsThis(){
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);
+            // this en el scope de una funcion en strict mode
+            function whoIsThisStrict(){
+                "use strict";
+                return this;
+            }
+
+            console.log(`whoIsThisSctrict(): ${whoIsThisStrict()}`);
+            // this en el contexto de un objeto
+            // this cuando sacamos una funcion de un objeto
+            // this en el contexto de una clase
+        </script>
+```
+
+![assets-git/26.png](assets-git/26.png)
+
+this en `whoIsThisSctrict()` es undefined y es el comportamiento que debe tener al usar el strict mode el cual sirve para evitar errores 
+
+- this en el contexto de un objeto
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            function whoIsThis(){
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);
+            // this en el scope de una funcion en strict mode
+            function whoIsThisStrict(){
+                "use strict";
+                return this;
+            }
+
+            console.log(`whoIsThisSctrict(): ${whoIsThisStrict()}`);
+            // this en el contexto de un objeto
+            const person= {
+                name: 'Jeyfred',
+                saludar(){
+                    console.log(`Hola soy ${this.name}`);
+                }
+            }
+
+            person.saludar();
+
+            // this cuando sacamos una funcion de un objeto
+            // this en el contexto de una clase
+        </script>
+```
+
+![assets-git/27.png](assets-git/27.png)
+
+En este caso la funcion saludar la esta ejecutando el objeto person y cuando se escribe `{this.name}` se refiere al objeto que se esta ejecutando dentro de si mismo por lo tanto this es todo el objeto person
+
+- this cuando sacamos una funcion de un objeto
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            function whoIsThis(){
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);
+            // this en el scope de una funcion en strict mode
+            function whoIsThisStrict(){
+                "use strict";
+                return this;
+            }
+
+            console.log(`whoIsThisSctrict(): ${whoIsThisStrict()}`);
+            // this en el contexto de un objeto
+            const person= {
+                name: 'Jeyfred',
+                saludar(){
+                    console.log(`Hola soy ${this.name}`);
+                }
+            }
+
+            person.saludar();
+
+            // this cuando sacamos una funcion de un objeto
+
+            const accion = person.saludar;
+            accion();
+            // this en el contexto de una clase
+        </script>
+```
+
+![assets-git/28.png](assets-git/28.png)
+
+Ahora el navegador solo ejecuta **Hola soy** y es porque accion no se esta llamando dentro del contexto de un objeto  si no que se esta llamando directamente y en ese caso `{this.name}` ya no existe 
+
+- this en el contexto de una clase
+
+```
+        <script>
+            // this en el scope global
+            console.log(`this: ${this}`);
+            //this en el scope de una funcion
+            function whoIsThis(){
+                return this;
+            }
+
+            console.log(`whoIsThis(): ${whoIsThis()}`);
+            // this en el scope de una funcion en strict mode
+            function whoIsThisStrict(){
+                "use strict";
+                return this;
+            }
+
+            console.log(`whoIsThisSctrict(): ${whoIsThisStrict()}`);
+            // this en el contexto de un objeto
+            const person= {
+                name: 'Jeyfred',
+                saludar(){
+                    console.log(`Hola soy ${this.name}`);
+                }
+            }
+
+            person.saludar();
+
+            // this cuando sacamos una funcion de un objeto
+
+            const accion = person.saludar;
+            accion();
+            // this en el contexto de una clase
+            class Person{
+                constructor(name){
+                    this.name = name;
+                }
+                saludar(){
+                    console.log(`Me llamo ${this.name}`);
+                }
+            }
+
+            const carlos = new Person('carlos');
+
+            carlos.saludar();
+        </script>
+```
+
+En este caso se crea una clase y en el constructor se le pasa el parametro name, al pasar `this.name = name;` significa que al objeto Person se le esta asignando un atributo name que es igual al constructor, despues se crea el metodo `saludar()` y este metodo tiene acceso a al atributo de la clase, posteriormente despues de cerrar la clase se crea un objeto carlos que es de tipo Person que despues a traves del objeto carlos llama al metodo saludar y lo ejecuta. En este caso **this** se refiere a la instancia del objeto el cual es carlos mas no a la clase que es Person

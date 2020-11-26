@@ -26,13 +26,22 @@ class MediaPlayer {
     unmute(){
       this.media.muted = false;
     }
+
     ejec(){
       if(this.media.paused){
         this.play();
       }else{
         this.pause();
+      }
     }
-  }
+
+    sonido(){
+      if(this.media.muted){
+        this.unmute();
+      }else{
+        this.mute();
+      }
+    }
 }
 
 export default MediaPlayer;

@@ -2,7 +2,10 @@ import MediaPlayer from './MediaPlayer.js'
 import AutoPlay from './plugins/AutoPlay.js'
 
 const video = document.querySelector('video');
-const button = document.querySelector('button');
-const player = new MediaPlayer({ movie : video, plugins : [new AutoPlay()] })
+const buttonPlay = document.querySelector('#play');
+const buttonSonido = document.querySelector('#sonido');
+const player = new MediaPlayer({ movie : video, //plugins : [new AutoPlay()] 
+})
 
-button.onclick = () => player.ejec()
+buttonPlay.onclick = () => player.ejec()
+buttonSonido.onclick = () => player.sonido()
