@@ -10,7 +10,7 @@
 
 [Closures](#Closures)
 
-[]()
+[El primer plugin](#El-primer-plugin)
 
 []()
 
@@ -913,3 +913,107 @@ completando cada funcion esto es lo que se podria hacer, pero de ninguna forma s
 La razon de que aparezca dos veces el numero 2 es porque la variable no se dejo re asignar y con `counter.increase()` aumento la primer vez el numero a 6 y luego se ejecuto cuatros veces `counter.decrease();` y por eso la funcion quedo en 2
 
 ![assets-git/22.png](assets-git/22.png)
+
+## El primer plugin
+
+Abrir el archivo **MediaPlayer.js** 
+
+1. se crea la propiedad de plugins para poder acceder a traves de un array `this.plugins = config.plugins || [];`
+
+2. se inicializa el metodo `this.initPlugins();` dentro del constructor que posteriormente se va a crear
+
+```
+class MediaPlayer {
+    constructor(config){
+      this.media = config.movie;
+      this.plugins = config.plugins || [];
+      this.initPlugins();
+    }
+
+    initPlugins(){
+      this.plugins.forEach(plugin => {
+        plugin.run(this)
+      });
+    }
+    
+    play(){
+      this.media.play();
+    }
+    
+    pause(){
+      this.media.pause();
+    }
+    
+    mute(){
+      this.media.muted = true;
+    }
+
+    unmute(){
+      this.media.muted = false;
+    }
+    ejec(){
+      if(this.media.paused){
+        this.play();
+      }else{
+        this.pause();
+    }
+
+
+  }
+}
+
+export default MediaPlayer;
+```
+
+3. se crear el metodo initPlugins
+
+```
+initPlugins(){
+  this.plugins.forEach(plugin => {
+    plugin.run(this)
+  });
+  }
+
+```
+
+4. se crea el metodo muted y unmuted 
+
+```
+    mute(){
+      this.media.muted = true;
+    }
+
+    unmute(){
+      this.media.muted = false;
+    }
+```
+
+5. dentro de la carpeta **assets** del pryecto se crea una subcarpeta llamada **plugins** y dentro de esta se crea el archivo **AutoPlay.js** el cual contiene a la clase `AutoPlay` y el metodo `run()`, el cual ejecuta la instancia de MediaPLayer a traves de player con los metodos mute y play para que cuando el navegador se abra automaticamente empiece a reproducirse sin sonido
+
+```
+class AutoPlay {
+    run(player){
+        player.mute()
+        player.play()
+    }
+}
+
+export default AutoPlay;
+```
+
+6. Por ultimo se importa la clase AutoPlay a **index.js** y la instancia queda creada con player que es la misma que utiliza MediaPlayer
+
+```
+import MediaPlayer from './MediaPlayer.js'
+import AutoPlay from './plugins/AutoPlay.js'
+
+const video = document.querySelector('video');
+const button = document.querySelector('button');
+const player = new MediaPlayer({ movie : video, plugins : [new AutoPlay()] })
+
+button.onclick = () => player.ejec()
+```
+
+por ultimo abrir el navegador y verificar que el video este sin sonido y se reproduzca automaticamente
+
+**Reto:** Añadir un nuevo boton a la interfaz el cual es el boton de **mute**, para que cuando el video comience el usuario pueda dar unmute y pueda escuchar el video
