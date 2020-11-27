@@ -16,7 +16,7 @@
 
 [Los métodos call, apply y bind](#Los-métodos-call-apply-y-bind)
 
-[]()
+[Prototype](#Prototype)
 
 []()
 
@@ -219,6 +219,10 @@ Descomentando la linea, el usuario puede dar click en el boton play en el navega
 
 **Nota:** Queda como reto añadir la funcionalidad para que el video haga pausa, es importante apoyarse de la documentacion que existe [mdn htmlmediaelement](https://developer.mozilla.org/es/docs/Web/API/HTMLMediaElement)
 
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
 ## Cómo llega un script al navegador
 
 El **DOM** es la representación que hace el navegador de un documento HTML.
@@ -344,6 +348,10 @@ y ahora en **index.html** en la etiqueta `<script>` se añade el atributo src y 
 ```
 
 Confirmar que todo siga funcionando como en el capitulo anterior con el reto de dar play y pausar el video
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
 
 ## Scope
 
@@ -588,6 +596,10 @@ button.onclick = () => player.ejec()
 ```
 
 De esta forma queda modularizado todo el codigo que antes se habia creado
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
 
 ## Closures
 
@@ -914,6 +926,10 @@ La razon de que aparezca dos veces el numero 2 es porque la variable no se dejo 
 
 ![assets-git/22.png](assets-git/22.png)
 
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
 ## El primer plugin
 
 Abrir el archivo **MediaPlayer.js** 
@@ -1017,6 +1033,10 @@ button.onclick = () => player.ejec()
 por ultimo abrir el navegador y verificar que el video este sin sonido y se reproduzca automaticamente
 
 **Reto:** Añadir un nuevo boton a la interfaz el cual es el boton de **mute**, para que cuando el video comience el usuario pueda dar unmute y pueda escuchar el video
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
 
 ## this
 
@@ -1284,6 +1304,10 @@ Ahora el navegador solo ejecuta **Hola soy** y es porque accion no se esta llama
 ```
 
 En este caso se crea una clase y en el constructor se le pasa el parametro name, al pasar `this.name = name;` significa que al objeto Person se le esta asignando un atributo name que es igual al constructor, despues se crea el metodo `saludar()` y este metodo tiene acceso a al atributo de la clase, posteriormente despues de cerrar la clase se crea un objeto carlos que es de tipo Person que despues a traves del objeto carlos llama al metodo saludar y lo ejecuta. En este caso **this** se refiere a la instancia del objeto el cual es carlos mas no a la clase que es Person
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
 
 ## Los métodos call, apply y bind
 
@@ -1768,3 +1792,622 @@ Lo que sucedio es que se llamo la funcion `Array.prototype.forEach`, llamando co
 ![assets-git/38.png](assets-git/38.png)
 
 ![assets-git/39.png](assets-git/39.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Prototype
+
+En Javascript todo son objetos, en el estandard anterior de JavaScript **ES5(EcmaScript5)** no teniamos clases, ni teniamos ese plano para crear objetos como lo hacian los lenguajes como JAVA.
+
+En este capitulo se va a explicar como funcionaba prototype para tener claridad sobre como se manejaba JavaScript en sus versiones pasadas antes de Junio de 2015.
+
+Todos los objetos “heredan” de un prototipo que a su vez hereda de otro prototipo y así sucesivamente creando lo que se llama la **prototype chain**.
+
+La keyword new crea un nuevo objeto que “hereda” todas las propiedades del prototype de otro objeto. No confundir prototype con proto que es sólo una propiedad en cada instancía que apunta al prototipo del que hereda.
+
+Dentro de la carpeta **ejercicios** crear el archivo **prototype.html** y agregar lo siguiente
+
+```
+<html>
+    <head>
+        <title>Scope</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <script>
+            // Un objeto común y corriente
+            // Otro objeto más
+            // Seamos un poco más eficientes
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+            // Object.create
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+    </body>
+</html>
+```
+
+y en el **index.html** de la carpeta **ejercicios** añadir la siguiente linea de codiga despues de this
+
+`<li><a href="/ejercicios/prototype.html">prototype</a></li>`
+
+Ahora en el navegador abrir la ruta http://127.0.0.1:8080/ejercicios/, seleccionar prototype y abrir la consola 
+
+- Un objeto común y corriente
+
+```
+        <script>
+            // Un objeto común y corriente
+            const ironMan = {
+                name : "Iron Man"
+            }
+
+            ironMan.saludar = function () {
+                console.log(`Hola soy ${this.name}`)
+            }
+
+            ironMan.saludar();
+            // Otro objeto más
+            // Seamos un poco más eficientes
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+            // Object.create
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+Se crea una constante ironMan que contiene un array con el nombre
+
+Se crea el metodo saludar utilizando el estandard **ES5** a traves de una funcion y se manda a llamar la funcion con el objeto ironMan
+
+![assets-git/40.png](assets-git/40.png)
+
+- Otro objeto más
+
+```
+        <script>
+            // Un objeto común y corriente
+            const ironMan = {
+                name : "Iron Man"
+            }
+
+            ironMan.saludar = function () {
+                console.log(`Hola soy ${this.name}`)
+            }
+
+            ironMan.saludar();
+            // Otro objeto más
+
+            const gamora = {
+                name : "Gamora"
+            }
+
+            gamora.saludar = function () {
+                console.log(`Hola soy ${this.name}`)
+            }
+
+            gamora.saludar();
+
+            // Seamos un poco más eficientes
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+            // Object.create
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+![assets-git/41.png](assets-git/41.png)
+
+Esto es ineficiente porque se esta repitiendo codigo
+
+- Seamos un poco más eficientes
+```
+        <script>
+            // Un objeto común y corriente
+            //const ironMan = {
+            //    name : "Iron Man"
+            //}
+
+            //ironMan.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //ironMan.saludar();
+            //// Otro objeto más
+
+            //const gamora = {
+            //    name : "Gamora"
+            //}
+
+            //gamora.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //gamora.saludar();
+
+            // Seamos un poco más eficientes
+
+            function Hero (name) {
+                const hero = {
+                    name : name
+                }
+
+                hero.saludar = function () {
+                    console.log(`Hola soy ${this.name}`)
+                };
+
+                return hero
+            }
+
+            const ironMan= Hero('Iron Man')
+            ironMan.saludar();
+
+            const gamora = Hero('Gamora')
+            gamora.saludar();
+
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+            // Object.create
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+En este caso se creo una funcion que recibe como parametro a name, dentro de esta funcion se crea la constante hero que hace a name igual al name de la funcion y luego se crea al metodo saludar utilizando la constante hero y utilizando el nombre que se pasa por funcion.
+
+Despues se retorna al objeto a hero
+
+por ultimo se pueden crear varios objetos de utilizando la funcion Hero y llamando los metodos
+
+![assets-git/41.png](assets-git/41.png)
+
+pero todavia se puede optimizar codigo para no llamar constantemente a la funcion saludar
+
+- Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+
+```        <script>
+            // Un objeto común y corriente
+            //const ironMan = {
+            //    name : "Iron Man"
+            //}
+
+            //ironMan.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //ironMan.saludar();
+            //// Otro objeto más
+
+            //const gamora = {
+            //    name : "Gamora"
+            //}
+
+            //gamora.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //gamora.saludar();
+
+            // Seamos un poco más eficientes
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    }
+
+            //    hero.saludar = function () {
+            //        console.log(`Hola soy ${this.name}`)
+            //    };
+
+            //    return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+
+            const heroMethods = {                
+                saludar : function () {
+                    console.log(`Me llamo ${this.name}`)
+                },
+            };
+
+            function Hero (name) {
+                const hero = {
+                    name : name
+                };
+
+            hero.saludar = heroMethods.saludar;
+            return hero
+            }
+
+            const ironMan= Hero('Iron Man')
+            ironMan.saludar();
+
+            const gamora = Hero('Gamora')
+            gamora.saludar();
+
+            // Object.create
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+Ahora lo que se hizo fue crear una constante que recibe un array que establece por dentro una funcion pero esto sigue sin ser tan eficiente sin embargo sirve y se sigue ejecutando en el navegador 
+
+![assets-git/42.png](assets-git/42.png)
+
+- Object.create
+
+Este metodo recibe un objeto y lo que hace es crear un nuevo objeto y el nuevoObjeto tiene todas las propiedades que el objeto que esta dentro del parametro create tiene definido
+
+```
+        <script>
+            // Un objeto común y corriente
+            //const ironMan = {
+            //    name : "Iron Man"
+            //}
+
+            //ironMan.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //ironMan.saludar();
+            //// Otro objeto más
+
+            //const gamora = {
+            //    name : "Gamora"
+            //}
+
+            //gamora.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //gamora.saludar();
+
+            // Seamos un poco más eficientes
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    }
+
+            //    hero.saludar = function () {
+            //        console.log(`Hola soy ${this.name}`)
+            //    };
+
+            //    return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+
+            //const heroMethods = {                
+            //    saludar : function () {
+            //        console.log(`Me llamo ${this.name}`)
+            //    },
+            //};
+//
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    };
+//
+            //hero.saludar = heroMethods.saludar;
+            //return hero
+            //}
+//
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+//
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Object.create
+
+            // const nuevoObjeto = Object.create(objeto)
+
+            const heroMethods = {                
+                saludar : function () {
+                    console.log(`Soy superheroe! ${this.name}`)
+                },
+            };
+
+            function Hero (name) {
+                const hero = Object.create(heroMethods)
+                hero.name = name;
+            return hero
+            }
+
+            const ironMan= Hero('Iron Man')
+            ironMan.saludar();
+
+            const gamora = Hero('Gamora')
+            gamora.saludar();
+            // Los métodos de hero dentro de Hero
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+Haciendo referencia a la explicacion de Object.create en este ejemplo la constante hero esta tomando todas las propriedades de `heroMethods`
+
+![assets-git/43.png](assets-git/43.png) 
+
+**¿Que es lo que esta haciendo Object.Create?**
+
+Este no solo esta copiando las propiedades de un objeto, para esto se va hacer uso de la consola del navegador.
+
+Aqui hay acceso a una variable global que ironMan y a heroMethods
+
+![assets-git/44.png](assets-git/44.png) 
+
+Ahora se va a crear un nuevo hero con una constante para ver que esta sucediendo y al llamarlo en la consola parece estar vacio solo aparece esto `{}` pero al despegarlo aparece `__proto__: Object`, esto quiere decir que tiene herencia prototipal la cual se vera en el siguiente capitulo, el objeto newHero esta adquiriendo las propiedades de heroMethods 
+
+![assets-git/45.png](assets-git/45.png) 
+
+- Los métodos de hero dentro de Hero
+
+```
+        <script>
+            // Un objeto común y corriente
+            //const ironMan = {
+            //    name : "Iron Man"
+            //}
+
+            //ironMan.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //ironMan.saludar();
+            //// Otro objeto más
+
+            //const gamora = {
+            //    name : "Gamora"
+            //}
+
+            //gamora.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //gamora.saludar();
+
+            // Seamos un poco más eficientes
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    }
+
+            //    hero.saludar = function () {
+            //        console.log(`Hola soy ${this.name}`)
+            //    };
+
+            //    return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+
+            //const heroMethods = {                
+            //    saludar : function () {
+            //        console.log(`Me llamo ${this.name}`)
+            //    },
+            //};
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    };
+
+            //hero.saludar = heroMethods.saludar;
+            //return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Object.create
+
+            // const nuevoObjeto = Object.create(objeto)
+
+            //const heroMethods = {                
+            //    saludar : function () {
+            //        console.log(`Soy superheroe! ${this.name}`)
+            //    },
+            //};
+
+            //function Hero (name) {
+            //    const hero = Object.create(heroMethods)
+            //    hero.name = name;
+            //return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+            // Los métodos de hero dentro de Hero
+
+            function Hero (name) {
+                const hero = Object.create(Hero.prototype);
+                hero.name = name;
+            return hero
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Soy superpoderoso(a)! ${this.name}`);
+            }
+
+            const ironMan= Hero('Iron Man')
+            ironMan.saludar();
+
+            const gamora = Hero('Gamora')
+            gamora.saludar();
+
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+        </script>
+```
+
+![assets-git/46.png](assets-git/46.png) 
+
+Aqui se reduce mas el codigo y utiliza al Hero.prototype para crear el metodo y pasarlo dentro del parametro de la misma funcion
+
+- new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+
+```
+        <script>
+            // Un objeto común y corriente
+            //const ironMan = {
+            //    name : "Iron Man"
+            //}
+
+            //ironMan.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //ironMan.saludar();
+            //// Otro objeto más
+
+            //const gamora = {
+            //    name : "Gamora"
+            //}
+
+            //gamora.saludar = function () {
+            //    console.log(`Hola soy ${this.name}`)
+            //}
+
+            //gamora.saludar();
+
+            // Seamos un poco más eficientes
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    }
+
+            //    hero.saludar = function () {
+            //        console.log(`Hola soy ${this.name}`)
+            //    };
+
+            //    return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Aun podemos mejorar más y evitar tener que crear la misma funcion cada
+
+            //const heroMethods = {                
+            //    saludar : function () {
+            //        console.log(`Me llamo ${this.name}`)
+            //    },
+            //};
+
+            //function Hero (name) {
+            //    const hero = {
+            //        name : name
+            //    };
+
+            //hero.saludar = heroMethods.saludar;
+            //return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // Object.create
+
+            // const nuevoObjeto = Object.create(objeto)
+
+            //const heroMethods = {                
+            //    saludar : function () {
+            //        console.log(`Soy superheroe! ${this.name}`)
+            //    },
+            //};
+
+            //function Hero (name) {
+            //    const hero = Object.create(heroMethods)
+            //    hero.name = name;
+            //return hero
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+            // Los métodos de hero dentro de Hero
+
+            //function Hero (name) {
+            //    const hero = Object.create(Hero.prototype);
+            //    hero.name = name;
+            //return hero
+            //}
+
+            //Hero.prototype.saludar = function () {
+            //    console.log(`Soy superpoderoso(a)! ${this.name}`);
+            //}
+
+            //const ironMan= Hero('Iron Man')
+            //ironMan.saludar();
+
+            //const gamora = Hero('Gamora')
+            //gamora.saludar();
+
+            // new es un atajo (azucar sintactica) para llevar Hero.protype al objeto
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`New: ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man')
+            ironMan.saludar();
+
+            const gamora =  new Hero('Gamora')
+            gamora.saludar();
+        </script>
+```
+
+Al utilizar la palabra new lo que esta haciendo es reemplazar esta linea de codigo `const hero = Object.create(Hero.prototype);` y esta sintaxis lo que hace es crear al prototipo de la clase, es decir la instancia de la clase declarada con una constante ironMan o gamora y lo que esta diciendo es que esos 2 objetos van a heredar todas las propiedades y metodos que contengan la clase Hero
+
+![assets-git/47.png](assets-git/47.png) 
+
+Actualmente para hacer lo que se hizo en el ultimo ejemplo se utiliza la palabra reservada **Class** para crear instancias de un objeto, para encontrar mas informacion sobre clases y POO(Programacion orienta a objetos) puede visitar el siguiente [link](https://github.com/jeyfredc/Programacion-orientada-a-objetos-POO-#tabla-de-contenido)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
