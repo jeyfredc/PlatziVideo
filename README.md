@@ -18,7 +18,7 @@
 
 [Prototype](#Prototype)
 
-[]()
+[Herencia Prototipal](#Herencia-Prototipal)
 
 []()
 
@@ -1812,7 +1812,7 @@ Dentro de la carpeta **ejercicios** crear el archivo **prototype.html** y agrega
 ```
 <html>
     <head>
-        <title>Scope</title>
+        <title>Protoype</title>
     </head>
 
     <body>
@@ -2407,6 +2407,249 @@ Al utilizar la palabra new lo que esta haciendo es reemplazar esta linea de codi
 ![assets-git/47.png](assets-git/47.png) 
 
 Actualmente para hacer lo que se hizo en el ultimo ejemplo se utiliza la palabra reservada **Class** para crear instancias de un objeto, para encontrar mas informacion sobre clases y POO(Programacion orienta a objetos) puede visitar el siguiente [link](https://github.com/jeyfredc/Programacion-orientada-a-objetos-POO-#tabla-de-contenido)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Herencia Prototipal
+
+Por default los objetos en JavaScript tienen cómo prototipo a **Object** que es el punto de partida de todos los objetos, es el prototipo padre. Object es la raíz de todo, por lo tanto tiene un prototipo padre undefined.
+
+Cuando se llama a una función o variable que no se encuentra en el mismo objeto que la llamó, se busca en toda la prototype chain hasta encontrarla o regresar undefined.
+
+La función **hasOwnProperty** sirve para verificar si una propiedad es parte del objeto o si viene heredada desde su prototype chain.
+
+Dentro de la carpeta **ejercicios** crear el archivo **prototypal-inheritance.html** y agregar lo siguiente
+
+```
+<html>
+    <head>
+        <title>prototypal-inheritance</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+            <h1>
+                <code>SomeObject.prototype</code> es un objeto donde definimos el
+                prototipo de las instancias de <code>SomeObject</code>. Es decir, las
+                instancias de <code>SomeObject</code> van a "heredar" de
+                <code>SomeObject.prototype</code>.
+                <br />
+                <br />
+                <code>SomeObject.[[Prototype]]</code> es el prototipo de
+                <code>SomeObject</code>. Es decir, <code>SomeObject</code> "hereda" de
+                <code>SomeObject.prototype</code>.
+            </h1>
+
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            // propiedades de la ca clase
+            // propiedades heredadas ej: toString
+            // hasOwnProperty (de donde sale toString o esto?)
+        </script>
+    </body>
+</html>
+```
+
+y en el **index.html** de la carpeta **ejercicios** añadir la siguiente linea de codiga despues de this
+
+`<li><a href="/ejercicios/prototypal-inheritance.html">prototypal-inheritance</a></li>`
+
+Ahora en el navegador abrir la ruta http://127.0.0.1:8080/ejercicios/, seleccionar prototypal-inheritance y abrir la consola 
+
+Actualmente el archivo contiene la misma clase Hero que se habia creado en el capitulo anterior y a continuacion se va a ver lo siguiente:
+
+- propiedades de la instancia
+
+```
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            console.log(`Name: ${ironMan.name}`);
+            // propiedades de la clase
+            // propiedades heredadas ej: toString
+            // hasOwnProperty (de donde sale toString o esto?)
+        </script>
+```
+
+![assets-git/48.png](assets-git/48.png) 
+
+En este caso el objeto ironMan tiene la propiedad `name`
+
+- propiedades de la clase
+
+```
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            console.log(`Name: ${ironMan.name}`);
+            // propiedades de la clase
+
+            console.log(`saludar: ${ironMan.saludar}`);
+
+            // propiedades heredadas ej: toString
+            // hasOwnProperty (de donde sale toString o esto?)
+        </script>
+```
+En este caso no se ejecuta el metodo saludar, solo se referencia para ver que arroja la consola que indica que es una funcion 
+
+![assets-git/49.png](assets-git/49.png) 
+
+- propiedades heredadas ej: toString
+```
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            console.log(`Name: ${ironMan.name}`);
+            // propiedades de la clase
+
+            console.log(`saludar: ${ironMan.saludar}`);
+
+            // propiedades heredadas ej: toString
+
+            console.log(`ToString: ${ironMan.toString}`);
+
+            // hasOwnProperty (de donde sale toString o esto?)
+        </script>
+```
+
+![assets-git/50.png](assets-git/50.png) 
+
+Estas son propiedades que se heredan desde Object y tambien esta definido, no es algo que venga de Hero o algo que se escriba, es algo que simplemente esta 
+
+- hasOwnProperty (de donde sale toString o esto?)
+
+```
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            console.log(`Name: ${ironMan.name}`);
+            // propiedades de la clase
+
+            console.log(`saludar: ${ironMan.saludar}`);
+
+            // propiedades heredadas ej: toString
+
+            console.log(`ToString: ${ironMan.toString}`);
+
+            // hasOwnProperty (de donde sale toString o esto?)
+
+            console.log(`ironMan.hasOwnProperty("name"): ${ironMan.hasOwnProperty("name")}`);
+
+        </script>
+```
+
+![assets-git/51.png](assets-git/51.png) 
+
+Como se llega desde la instancia hasta toString, el metodo hasOwnProperty sirve para inspeccionar si algo le pertence directamente a un objeto o si lo toma prestado a traves de herencia 
+
+aqui muestra que al hacer un `console.log(`ironMan.hasOwnProperty("name"): ${ironMan.hasOwnProperty("name")}`);` el navegador muestra que es **true** y ahora si se escribe
+
+`console.log(`ironMan.hasOwnProperty("saludar"): ${ironMan.hasOwnProperty("saludar")}`);`
+
+![assets-git/52.png](assets-git/52.png) 
+
+sale que es **false**, es decir que saludar ya no le pertece al objeto **iroMan**, lo tomo prestado 
+
+A continuacion se hace uso de la consola para inspeccionar al objeto **ironMan**
+
+- Lo primero que dice es que **ironMan** proviene de `Hero` y dentro hay algo que dice `__proto__`
+
+![assets-git/53.png](assets-git/53.png) 
+
+- Si se inspecciona `__proto__` esta saludar que es la funcion que proviene de Hero, pero sin embargo hay un `__proto__`
+
+![assets-git/54.png](assets-git/54.png) 
+
+- Se inspecciona el otro `__proto__`, que viene desde `Object()` y en este esta `hasOwnProperty` y `toString`
+
+![assets-git/55.png](assets-git/55.png)
+
+- Que significa el primer `__proto__`, este fumciona cuando se llama al objeto es decir `ironMan.__proto__`, pero este puede variar y no es algo que este especificado en el lenguaje, es un detalle de implementacion que ponen los navegadores, Node o cualquier otro entorno 
+
+![assets-git/56.png](assets-git/56.png)
+
+- La forma correcta o sugerida es usar `Object.getPrototypeOf` y luego pasar el objeto por parametro para que regrese el prototipo
+
+![assets-git/57.png](assets-git/57.png)
+
+- Aqui se compara al prototipo del objeto ironMan con la clase Hero y sale **true** pero es porque ese objeto es identico al que esta en `prototypeOfIronMan`, pero esto no quiere decir que solo tenga el mismo contenido si no que es el mismo objeto
+
+![assets-git/58.png](assets-git/58.png)
+
+- Si prototypeOfIronMan es identico a Hero.prototype, se deberia poder crear una funcion y que el objeto obtenga el mismo metodo. Pero esto es una referencia desde ironMan hasta prototype. El lengunaje lo esta encadenando
+
+![assets-git/59.png](assets-git/59.png)
+
+- si se usa hasOwnProperty("fight"), fight no le pertenece a ironMan
+
+![assets-git/60.png](assets-git/60.png)
+
+Lo que esta haciendo el lenguaje internamente es preguntar `ironMan.fight` existe?. Este responde no, no existe. Entonces lo que hace es buscar en su `__proto__` y pregunta `ironMan.__proto__.fight` existe?. Este responde si, si existe.
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>

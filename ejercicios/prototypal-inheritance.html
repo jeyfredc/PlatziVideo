@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>prototypal-inheritance</title>
+    </head>
+
+    <body>
+        <a href="/ejercicios/">Go Back</a>
+        <p><em>Abre la consola</em></p>
+
+        <h1>
+            <code>SomeObject.prototype</code> es un objeto donde definimos el
+            prototipo de las instancias de <code>SomeObject</code>. Es decir, las
+            instancias de <code>SomeObject</code> van a "heredar" de
+            <code>SomeObject.prototype</code>.
+            <br />
+            <br />
+            <code>SomeObject.[[Prototype]]</code> es el prototipo de
+            <code>SomeObject</code>. Es decir, <code>SomeObject</code> "hereda" de
+            <code>SomeObject.prototype</code>.
+          </h1>
+
+        <script>
+
+            function Hero (name) {
+                //const hero = Object.create(Hero.prototype);
+                this.name = name;
+                //return this
+            }
+
+            Hero.prototype.saludar = function () {
+                console.log(`Hola, soy ${this.name}`);
+            }
+
+            const ironMan= new Hero('Iron Man');
+
+            // propiedades de la instancia
+            console.log(`Name: ${ironMan.name}`);
+            // propiedades de la clase
+
+            console.log(`saludar: ${ironMan.saludar}`);
+
+            // propiedades heredadas ej: toString
+
+            console.log(`ToString: ${ironMan.toString}`);
+
+            // hasOwnProperty (de donde sale toString o esto?)
+
+            console.log(`ironMan.hasOwnProperty("saludar"): ${ironMan.hasOwnProperty("saludar")}`);
+
+            // inspeccionemos el prototipo de ironMan
+            // inspeccionemos el prototipo de gamora
+            // inspeccionemos el prototipo del Object
+        </script>
+    </body>
+</html>
