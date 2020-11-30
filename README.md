@@ -24,7 +24,7 @@
 
 [Abstract Syntax Tree en Práctica](#Abstract-Syntax-Tree-en-Práctica)
 
-[]()
+[Cómo funciona el JavaScript Engine](#Cómo-funciona-el-JavaScript-Engine)
 
 []()
 
@@ -2895,4 +2895,42 @@ En la parte superior izquierda esta en nombre en minuscula y en la parte inferio
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
 
-## 
+## Cómo funciona el JavaScript Engine
+
+Despues de que el **parser** hizo su trabajo y dio el AST continua el interpretador, el compilador para tener codigo optimizado
+
+Una vez tenemos el **AST** ahora hay que convertirlo a Bytecode.
+
+**Bytecode** es como el código assembler pero en lugar de operar en el procesador opera en la máquina virtual **V8** del navegador.
+
+**Machine code** es el más bajo nivel, es código binario que va directo al procesador.
+
+![assets-git/79.png](assets-git/79.png)
+
+**El profiler** se sitúa en medio del bytecode y el optimizador
+
+Cada máquina virtual tiene sus particularidades, por ejemplo V8 tiene algo llamado Hot Functions.
+
+![assets-git/80.png](assets-git/80.png)
+
+Cuando la funcion ya esta en colocor rojo es cuando esta lista para ser optimizada y es a lo que se le conoce como Hot Functions.
+
+Cuando una sentencia función es ejecutada muy frecuentemente, V8 la denomina como una hot function y hace una optimización que consiste en convertirla a machine code para no tener que interpretarla de nuevo y agilizar su ejecución.
+
+Cada navegador tiene su implementación de JavaScript Engine:
+
+- SpiderMonkey - Firefox
+
+![assets-git/81.png](assets-git/81.png)
+
+- Chackra - Edge
+
+![assets-git/82.png](assets-git/82.png)
+
+- JavaScriptCore - Safari
+
+![assets-git/83.png](assets-git/83.png)
+
+- V8 - Chrome
+
+![assets-git/84.png](assets-git/84.png)
