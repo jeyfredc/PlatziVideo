@@ -26,7 +26,7 @@
 
 [Cómo funciona el JavaScript Engine](#Cómo-funciona-el-JavaScript-Engine)
 
-[]()
+[Event Loop](#Event-Loop)
 
 []()
 
@@ -2934,3 +2934,85 @@ Cada navegador tiene su implementación de JavaScript Engine:
 - V8 - Chrome
 
 ![assets-git/84.png](assets-git/84.png)
+
+## Event Loop
+
+El **Event Loop** hace que Javascript parezca ser multihilo a pesar de que corre en un solo proceso.
+
+Javascript se organiza usando las siguientes estructuras de datos:
+
+- **Stack**. Va apilando de forma organizada las diferentes instrucciones que se llaman. Lleva así un rastro de dónde está el programa, en que punto de ejecución nos encontramos, primero inicia haciendo push y agregando funciones, pero la unica forma de empezar a sacar o ejecutarlas es haciendo pop como se ve en el grafico a continuacion
+
+![assets-git/86.png](assets-git/86.png)
+
+Esta es la forma en como trabaja el stack con el siguiente ejemplo de codigo 
+
+Lo primero que se tiene es un codigo aqui se llama **(anonymous)** porque el programa no tiene nombre
+
+![assets-git/87.png](assets-git/87.png)
+
+Cuando el programa llega a main se agrega un nivel mas y luego empieza a revisar el codigo nuevamente
+
+![assets-git/88.png](assets-git/88.png)
+
+Lo primero que encuentra es la funcion **hello**
+
+![assets-git/89.png](assets-git/89.png)
+
+y por ultimo la ejecuta a traves de un **console.log**
+
+![assets-git/90.png](assets-git/90.png)
+
+despues que ejecuta **hello** continua leyendo el codigo y se encuentra ahora con la funcion **world** esto va a ocurrir de manera muy rapida
+
+![assets-git/91.png](assets-git/91.png)
+
+y luego ocurre el mismo proceso que hizo con la funcion **hello**
+
+![assets-git/92.png](assets-git/92.png)
+
+Luego el programa empieza a retroceder, no encuentra nada mas por hacer y el stack queda vacio
+
+![assets-git/93.png](assets-git/93.png)
+
+![assets-git/94.png](assets-git/94.png)
+
+Con un programa asincrono se tiene la funcion pero lo primero que se va a ejecutar es la palabra world y despues hello, recordando que la funcion setTimeOut, recibe una funcion y la ejecuta despues del tiempo que se indique
+
+![assets-git/95.png](assets-git/95.png)
+
+Primero recibe la funcion **asyncHellorWorld**
+
+![assets-git/96.png](assets-git/96.png)
+
+Al haber reconocido setTimeOut lo que hace el programa es continuar con su ejecucion y hacer el console.log de world, a esto se le llama sincronia, hay cosas que van a pasar eventualmente pero primero le toca la impresion a la palabra world
+
+![assets-git/97.png](assets-git/97.png)
+
+Ahora el programa acaba 
+
+![assets-git/98.png](assets-git/98.png)
+
+y el stack nuevamente queda vacio, pero sabe que tiene un proceso pendiente y es cuando vuelve a la funcion porque el proceso es asincrono
+
+![assets-git/99.png](assets-git/99.png)
+
+y regresa nuevamente para ejecutar la funcion que estaba pendiente y que se iba a ejecutar eventualmente como se definio en la funcion y entra al console.log imprime hello
+
+![assets-git/100.png](assets-git/100.png)
+
+y nuevamente el stack queda vacio y ahora si se acaba el programa
+
+![assets-git/99.png](assets-git/99.png)
+
+- **Memory Heap**. De forma desorganizada se guarda información de las variables y del scope, este es completamente aleatorio.
+
+![assets-git/85.png](assets-git/85.png)
+
+- **Schedule Tasks**. Aquí se agregan a la cola, las tareas programadas para su ejecución.
+
+- **Task Queue**. Aquí se agregan las tareas que ya están listas para pasar al stack y ser ejecutadas. El stack debe estar vacío para que esto suceda.
+
+- **MicroTask Queue**. Aquí se agregan las promesas. Esta Queue es la que tiene mayor prioridad.
+
+El Event Loop es un loop que está ejecutando todo el tiempo y pasa periódicamente revisando las queues y el stack moviendo tareas entre estas dos estructuras.
