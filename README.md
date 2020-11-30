@@ -22,7 +22,7 @@
 
 [Parsers y el Abstract Syntax Tree (Analizador y arbol de sintaxis abstracta)](#Parsers-y-el-Abstract-Syntax-Tree-(Analizador-y-arbol-de-sintaxis-abstracta))
 
-[]()
+[Abstract Syntax Tree en Práctica](#Abstract-Syntax-Tree-en-Práctica)
 
 []()
 
@@ -2715,7 +2715,7 @@ Luego tambien esta el Abstract Syntax Tree en cual es un grafo (estructura de da
 
 - Syntax Highlighters
 
-Para ver un ejemplo puede ingresar al siguiente enlace continuando con el ejemplo de la variable `foo`
+Para ver un ejemplo puede ingresar al siguiente [enlace](https://astexplorer.net/) continuando con el ejemplo de la variable `foo`
 
 Lo cual dice que la raiz de todo es el programa luego en el cuerpo se encuentra que hay una declaracion y en esa declaracion que es de tipo `let`, se encuentra un declarador que tiene un identificador que se llama `foo`
 
@@ -2724,6 +2724,172 @@ Lo cual dice que la raiz de todo es el programa luego en el cuerpo se encuentra 
 ![assets-git/66.png](assets-git/66.png)
 
 y si se consulta mas alla se van a encontrar mas cosas que tienen que ver con el AST
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Abstract Syntax Tree en Práctica
+
+Se puede usar AST para crear una regla para **ESLint**, la cual es la herramienta que se analiza el codigo tratando de buscar errores y avisando al usuario que parte de la sintaxis esta escribiendo mal, **ESLint** tiene muchas reglas que permiten avisar al usuario que es lo que debe corregir pero ademas de esto tambien se pueden crear nuevas reglas
+
+Dirigir al siguiente [enlace](https://astexplorer.net/#) 
+
+Para poder usar se debe revisar que el explorador debe estar configurado en **babel-eslint**
+
+![assets-git/67.png](assets-git/67.png)
+
+Donde dice **Transform** verificar que este en **ESLint v4**
+
+![assets-git/68.png](assets-git/68.png)
+
+En el recuadro inferior izquierdo de la pantalla aparece **Prettier** donde se escribe la regla y en la parte derecha se ve como esta funcionando esa regla.
+
+El codigo que se va a trabajar sobre el recuadro superior izquierdo es una constante y debajo en comentarios van a estar las reglas que se van a crear 
+
+```
+const pi = 3.1415;
+
+// Variables constantes
+// Variables que guarden un numero
+
+// El nombre de la variable tiene que estar en UPPERCASE
+```
+
+Para esto se debe limpiar la consola en la parte de abajo y solo dejar esta parte de codigo
+
+```
+export default function(context) {
+  return {
+  };
+};
+```
+
+En la parte del arbol aparece como trabaja la variable const, la cual indica que es una variable de declaracion 
+
+![assets-git/70.png](assets-git/70.png)
+
+en la parte de abajo se coloca que va a recibir una variable de declaracion a la cual se le va a pasar un nodo 
+
+```
+export default function(context) {
+  return {
+    VariableDeclaration(node){
+      console.log(node)
+  };
+};
+```
+
+para inspeccionar que es lo que tiene el nodo se hace un `console.log` y se mira en el navegador
+
+![assets-git/71.png](assets-git/71.png)
+
+En este aparece que el nodo tiene una propiedad llamada `"kind"` que es la constante y si se observa sobre el arbol en body tambien aparece `"kind"`
+
+![assets-git/72.png](assets-git/72.png)
+
+Ahora se empieza a construir la regla, se quita el `console.log` lo primero que se debe hacer es una validacion donde el nodo y su propiedad deben ser exactamende igual a una constante `if (node.kind === "const")` entonces como `variableDeclarator` es un arreglo se escribe que la constante de `declaration` solo va a tomar en cuenta al primer valor del arreglo `const declaration = node.declarations[0];` 
+
+```
+export default function(context) {
+  return {
+    VariableDeclaration(node){
+      //tipo de variable const
+      if (node.kind === "const"){
+          const declaration = node.declarations[0];
+        }
+      }
+  };
+};
+```
+
+Despues de asegurar que se obtiene el primer valor se debe asegurar que el valor va a ser numerico, para eso se crea otra validacion, pero primero se de ingresar al arbol en `declarations -> VariableDeclarator -> init -> value` y con un typeof ver de que asegurar que la declaracion sea numerica
+
+![assets-git/73.png](assets-git/73.png)
+
+```
+export default function(context) {
+  return {
+    VariableDeclaration(node){
+      //tipo de variable const
+      if (node.kind === "const"){
+          const declaration = node.declarations[0];
+        
+        // asegurarnos que el valor es un numero
+        if(typeof declaration.init.value === "number"){
+          
+        	}
+        }
+      }
+  };
+};
+```
+Despues se debe asegurar que la palabra que se escriba despues de `const` debe estar en mayusculas, para esto se revisa en el arbol e ingresar a `declarations -> VariableDeclarator -> Identifier -> name` y se crea la validacion indicando que si la declaracion no es igual a la misma declaracion pero en mayuscula entonces lance un error
+
+![assets-git/74.png](assets-git/74.png)
+
+```
+export default function(context) {
+  return {
+    VariableDeclaration(node){
+      //tipo de variable const
+      if (node.kind === "const"){
+          const declaration = node.declarations[0];
+        
+        // asegurarnos que el valor es un numero
+        if(typeof declaration.init.value === "number"){
+          if(declaration.id.name != declaration.id.name.toUpperCase()){
+            context.report({
+              node: declaration.id,
+              message: "El nombre de la constante debe estar en mayúsculas"
+            		})
+          		}
+        	}
+        }
+      }
+  };
+};
+```
+Despues de generar el error en la parte inferior derecha aparece el error indicado 
+
+![assets-git/75.png](assets-git/75.png)
+
+pero si `pi` se cambia por `PI` ahora no aparece el error
+
+![assets-git/76.png](assets-git/76.png)
+
+Lo importante de usar AST es que tambien deja corregir automaticamente el error para eso se debe agregar una funcion de la siguiente forma donde se pasa que el argumento para reemplazar texto, busca la declaracion en el id y el nombre lo transforma a mayuscula
+
+```
+export default function(context) {
+  return {
+    VariableDeclaration(node){
+      //tipo de variable const
+      if (node.kind === "const"){
+          const declaration = node.declarations[0];
+        
+        // asegurarnos que el valor es un numero
+        if(typeof declaration.init.value === "number"){
+          if(declaration.id.name != declaration.id.name.toUpperCase()){
+            context.report({
+              node: declaration.id,
+              message: "El nombre de la constante debe estar en mayúsculas",
+              fix: function(fixer){
+              	return fixer.replaceText(declaration.id, declaration.id.name.toUpperCase())
+            			}
+            		})
+          		}
+        	}
+        }
+      }
+  };
+```
+
+![assets-git/77.png](assets-git/77.png)
+
+En la parte superior izquierda esta en nombre en minuscula y en la parte inferior derecha aparece como se debe colocar, para verlo se agrega otra variable en minusculas donde se observa la transformacion en la otra pantalla a mayusculas
+
+![assets-git/78.png](assets-git/78.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
