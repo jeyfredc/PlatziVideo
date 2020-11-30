@@ -2654,3 +2654,77 @@ Lo que esta haciendo el lenguaje internamente es preguntar `ironMan.fight` exist
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
+
+## Parsers y el Abstract Syntax Tree (Analizador y arbol de sintaxis abstracta)
+
+Cuando llega un script al navegador comienza un proceso ejecutado por el motor de javaScript que agarra el codigo, lo analiza, lo deconstruye, lo construye, lo ejecuta y luego lo optimiza
+
+Netscape inicio con JavaScript en ese entonces se realizaban cosas simples a nivel de codigo donde el programa se iba ejecutando linea por linea y se iba interpretando un paso a la vez y actualmente pasa asi pero de forma mas rapida y optimizada la cual llego con google chrome y el motor de JavaScript, esto es lo que hace.
+
+El JS Engine recibe el código fuente y lo procesa de la siguiente manera:
+
+- El **parser** descompone y crea tokens que integran el **AST(Abstract Syntax Tree)**.
+
+- Se compila a **bytecode** y se ejecuta.
+
+- Lo que se pueda se **optimiza a machine code** y se reemplaza el código base.
+
+![assets-git/61.png](assets-git/61.png)
+
+Javascript pasa a parser donde se obtiene el AST, este lo pasa hacia el interpretador y produce bytecode que es donde empieza a ejecutar el programa, bytecode es un lenguaje de menor nivel y permite que los procesos se ejecuten mas rapido, mientras se ejecuta hay un proceso que se esta ejecutando que es el Profiling data el cual va a estar analizando la ejecucion y encuentras los puntos donde el programa se puede optimizar y eventualmente va a producir el machine code el cual lo hace el Optimizing compiler (Compilador de optimizaciones)
+
+Un parser agarra el codigo fuente y lo va a leer, pero no lo entiende en la forma que se escribe al estar realizando un programa, primero lo debe descomponer y empieza a generar tokens el cual hace ese proceso de descomposicion e identifica que sintaxis como **let**, **new**, simbolos, etc, son palabras claves del lenguaje.
+
+El parser es del 15% al 20% del proceso de ejecución por lo que hay que usar parser del código justo en el momento que lo necesitamos y no antes de saber si se va a usar o no, cuando este detecta un error en la ejecucion del codigo sale un SyntaxError.
+
+Un **SyntaxError** es lanzado cuando el motor JavaScript encuentra partes que no forman parte de la sintaxis del lenguaje y esto lo logra gracias a que se tiene un AST generado por el parser.
+
+Existen dos formas de hacer parsing
+
+![assets-git/62.png](assets-git/62.png)
+
+para ver un ejemplo de los tokens puede ingresar al siguiente [enlace](https://esprima.org/demo/parse.html#) y hacer click sobre la pestaña **Tokens**
+
+En la parte derecha se observar que let es un keyword o una palabra del lenguaje
+
+Foo es un identificador
+
+= es un puntuador o simbolo de puntuacion
+
+bar es un String
+
+; es otro puntuador o simbolo de puntuacion
+
+![assets-git/63.png](assets-git/63.png)
+
+Lo mismo va a pasar si se cambia por numeros, van a existir identificadores que denoten que es lo que esta escrito en el lenguaje JavaScript
+
+![assets-git/64.png](assets-git/64.png)
+
+Luego tambien esta el Abstract Syntax Tree en cual es un grafo (estructura de datos) que representa un programa y que es usado en:
+
+- JavaScript Engine
+
+- Bundlers: Webpack, Rollup, Parcel
+
+- Transpilers: Babel
+
+- Linters: ESLint, Prettify
+
+- Type Checkers: TypeScript, Flow
+
+- Syntax Highlighters
+
+Para ver un ejemplo puede ingresar al siguiente enlace continuando con el ejemplo de la variable `foo`
+
+Lo cual dice que la raiz de todo es el programa luego en el cuerpo se encuentra que hay una declaracion y en esa declaracion que es de tipo `let`, se encuentra un declarador que tiene un identificador que se llama `foo`
+
+![assets-git/65.png](assets-git/65.png)
+
+![assets-git/66.png](assets-git/66.png)
+
+y si se consulta mas alla se van a encontrar mas cosas que tienen que ver con el AST
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
