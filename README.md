@@ -32,7 +32,7 @@
 
 [Getters y setters](#Getters-y-setters)
 
-[]()
+[Proxy](#Proxy)
 
 []()
 
@@ -3389,3 +3389,146 @@ export default AutoPlay;
 ```
 
 Por ultimo en el archivo **index.js** del proyecto, descomentar el plugin Autoplay para probar en el navegador
+
+## Proxy
+
+El proxy sirve para interceptar la lectura de propiedades de un objeto (los get, y set) entre muchas otras funciones. Así, antes de que la llamada llegue al objeto podemos manipularla con una lógica que nosotros definamos. para ver mas informacion consultar en [Handler Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy)
+
+Lo que hace el proxy es ayudar a encontrar un valor por ejemplo cuando se usa git en la consola 
+
+por ejemplo al escribir mal `git add .`
+
+la consola muestra una sugerencia de lo que se deberia usar o inidica que se consulte en las ayudas del programa
+
+![assets-git/106.png](assets-git/106.png)
+
+o por ejemplo el comando `npm help` mal escrito
+
+![assets-git/107.png](assets-git/107.png)
+
+Al final sale una sugerencia del comando que se deberia usar
+
+Para explicar mejor esto en la carpeta de **ejercicios** crear el archivo **proxy.html** y agregar lo siguiente
+
+```
+<html>
+  <head>
+    <title>Proxy</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script src="https://unpkg.com/fast-levenshtein@2.0.6/levenshtein.js"></script>
+    <script>
+      // Proxy es parecido a getters y setters
+      // Usa un concepto que se llama traps: son interceptores de llamadas. A diferencia de getters, no opera sobre una propieda, si no sobre un objeto.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Methods_of_the_handler_object
+
+      // Creemos un ejemplo donde interceptamos llamadas para leer una propiedad
+      // Si la propiedad existe, la regresamos
+      // Si no existe, entonces sugerimos una que pueda funcionar
+
+      // Para eso eso vamos a usar un algoritmo que se llama Levenshtein. (window.Levenshtein.get)
+      // Ejemplos de levenshtein distance (usa window.Levenshtein)
+
+    </script>
+  </body>
+</html>
+```
+
+en **index.html** de ejercicios agregar la siguiente linea de codigo debajo de `promises`
+
+`<li><a href="/ejercicios/proxy.html">proxy</a></li>`
+
+Dirigir el navegador a la siguiente ruta http://127.0.0.1:8080/ejercicios/ y seleccionar proxy, luego abrir la consola del navegador para hacer una prueba
+
+para ejecutar dicha prueba se va a ejecutar la libreria que se llama **fast-levenshtein** que esta cargado en el documento **proxy.html** a traves de la etiqueta script `<script src="https://unpkg.com/fast-levenshtein@2.0.6/levenshtein.js"></script>`
+
+**fast-levenshtein** es un algoritmo que va a encontrar la distancia que hay entre 2 cadenas de caracter.
+
+Notar en el ejemplo a continuacion 
+
+JavaScript y Java son palabras distintas para que Java sea igual a JavaScript hacen falta 6 caracter
+
+al igual que en el otro ejemplo Script y Scripd son diferentes para que sean iguales su distancia es de 1 caracter
+
+![assets-git/108.png](assets-git/108.png)
+
+A conitnuacion abrir el archivo **proxy.html** para empezar a implementar el siguiente bloque de codigo
+
+1. Se crea una constante p que va a regresar al objeto Proxy, como Proxy es una clase se debe instanciar con la palabra reservada `new`, esta clase va a obtener 2 argunmentos que es el target y el handler
+
+2. El target es el objeto que se quiere interceptar, es decir antes de que una llamada llegue a este objeto se debe interceptar. Se crea el objeto target el cual va a recibir un arreglo de colores, red, green y blue
+
+3. Si llega a haber una equivocacion lo que se quiere es que al buscar esas propiedades del objeto target existan ayudas y se crea el objeto handler el cual tiene acceso a diferentes metodos con las [Handler Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy) y en este caso se usa `handler.get()` y get va a recibir 2 parametros, el `obj` objeto el cual representa `target` y la `prop` que es la propiedad que se esta tratando de leer
+
+4. Si la propiedad existe dentro del objeto no se debe hacer nada para eso se realiza una validacion indicando que si la propiedad esta en el objeto se retorna el valor buscado
+
+5. Hay que buscar una sugerencia, se crea otro objeto llamado `suggestion` y se debe indicar cual es la llave del array de target que mas se parece y que el usuario esta buscando para eso se listan todas las llaves usando `Object.keys` del objeto el cual se pasa como parametro y a traves de find encontrar una de las llaves
+
+6. Se retorna el resultado usando `Levenshtein.get` que busca en la llave y la propiedad que sean menores o iguales a 3
+
+7. En caso de no encontrar se hace otra validacion indicando que la propiedad que esta buscando no se encuentra, y luego quisiste decir la sugerencia
+
+8. Por ultimo hay que regresar el objeto a traves de `obj[prop]`
+
+```
+<html>
+  <head>
+    <title>Proxy</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script src="https://unpkg.com/fast-levenshtein@2.0.6/levenshtein.js"></script>
+    <script>
+      // Proxy es parecido a getters y setters
+      // Usa un concepto que se llama traps: son interceptores de llamadas. A diferencia de getters, no opera sobre una propieda, si no sobre un objeto.
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Methods_of_the_handler_object
+
+      // Creemos un ejemplo donde interceptamos llamadas para leer una propiedad
+      // Si la propiedad existe, la regresamos
+      // Si no existe, entonces sugerimos una que pueda funcionar
+
+      // Para eso eso vamos a usar un algoritmo que se llama Levenshtein. (window.Levenshtein.get)
+      // Ejemplos de levenshtein distance (usa window.Levenshtein)
+
+      const target = {
+          red: 'Rojo',
+          green: 'Verde',
+          blue: 'Azul',
+      }
+
+      const handler = {
+          get(obj, prop){
+              if (prop in obj){
+                  return obj[prop];
+              }
+
+              const suggestion = Object.keys(obj).find(key =>{
+                return Levenshtein.get(key, prop) <= 3;
+              });
+
+              if (suggestion){
+                console.log(`${prop} no se encontró. Quisiste decir ${suggestion}?`);
+              }
+
+              return obj[prop];
+          }
+      }
+
+      const p = new Proxy(target, handler);
+
+    </script>
+  </body>
+</html>
+
+```
+
+Despues de esto nuevamente pasar a la consola y empezar a hacer las busquedas
+
+![assets-git/109.png](assets-git/109.png)
