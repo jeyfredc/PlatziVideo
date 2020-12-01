@@ -28,7 +28,7 @@
 
 [Event Loop](#Event-Loop)
 
-[]()
+[Promesas](#Promesas)
 
 []()
 
@@ -3016,3 +3016,315 @@ y nuevamente el stack queda vacio y ahora si se acaba el programa
 - **MicroTask Queue**. Aquí se agregan las promesas. Esta Queue es la que tiene mayor prioridad.
 
 El Event Loop es un loop que está ejecutando todo el tiempo y pasa periódicamente revisando las queues y el stack moviendo tareas entre estas dos estructuras.
+
+## Promesas
+
+Para crear las promesas usamos la clase Promise. El constructor de Promise recibe un sólo argumento, un callback con dos parámetros, **resolve** y **reject**. resolve es la función a ejecutar cuando se resuelve y reject cuando se rechaza.
+
+El async/await es sólo syntax sugar de una promesa, por debajo es exactamente lo mismo.
+
+La clase Promise tiene algunos métodos estáticos bastante útiles:
+
+- **Promise.all.** Da error si una de las promesas es rechazada.
+
+- **Promise.race.** Regresa sólo la promesa que se resuelva primero.
+
+Este capitulo se va a realizar con una API que es [themovieDB](https://developers.themoviedb.org/3/getting-started/authentication), en esta se puede crear una cuenta, ir al perfil y solicitar un API key la cual va a hacer falta para poder solicitar los datos a la pagina.
+
+De momento se va a usar el API key que se va a utilizar en el siguiente archivo a crear el cual se va a llamar **promises.html** y va a estar dentro de la carpeta de **ejercicios** con los siguientes bloques de codigo
+
+```
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible"content="ie=edge">
+  <title>Promises</title>
+</head>
+
+<body>
+
+  <ul>
+    <li><button id="sequence">Get Top Movies in Sequence</button></li>
+    <li><button id="parallel">Get Top Movies in Parallel</button></li>
+    <li><button id="fastest">Get Fastest Top Movie</button></li>
+  </ul>
+
+  <ul id="movies"></ul>
+
+  <script>
+    const apiKey = 'b89fc45c2067cbd33560270639722eae';
+
+    function getMovie(id) {
+      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`;
+      return fetch(url).then(reponse => response.json());
+    }
+
+    function getPopularMovies() {
+      const url = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${apiKey}`;
+      return fetch(url)
+        .then(reponse => response.json())
+        .then(data => data.results);
+    }
+
+    function getTopMoviesIds(n = 3) {
+      return getPopularMovies().then(popularMovies =>
+        popularMovies.slice(0, n).map(movie => movie.id)
+      );
+    }
+
+    function renderMovies(movies) {
+        const movieList = document.getElementById('movies');
+        movieList.innerHTML = '';
+
+        movies.forEach(movie => {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w342${movie.poster_path}" />
+            <h5>${movie.title}</h5>
+            <p>Released on <em>${movie.release_date}</em></p>
+            `;
+
+          movieList.appendChild(listItem);
+        });
+      }
+
+      //function getTopMoviesInSequence() {
+      //  return [];
+      //}
+
+      //function getTopMoviesInParallel() {
+      //  return [];
+      //}
+
+      //function getFastestTopMovie() {
+      //  return [];
+      //}
+
+      //document.getElementById('sequence').onclick = async function() {
+      //  const movies = await getTopMoviesInSequence();
+      //  renderMovies(movies);
+      //};
+
+      //document.getElementById('parallel').onclick = async function() {
+      //  const movies = await getTopMoviesInParallel();
+      //  renderMovies(movies);
+      //};
+
+      //document.getElementById('fastest').onclick = async function() {
+      //  const movie = await getFastestTopMovie();
+      //  renderMovies([movie]);
+      //};
+
+  </script>
+</body>
+
+</html>
+
+```
+
+en el **index.html** de la carpeta de **ejercicios** agregar la siguiente linea de codigo debajo de prototypal-inheritance
+
+`<li><a href="/ejercicios/promises.html">promises</a></li>`
+
+Luego dirigirse a la siguiente direccion en el navegador y abrir promises http://127.0.0.1:8080/ejercicios/
+
+El archivo **promises.html** ya tiene funciones definidas con la API pero se va a trabajar para convertirlas en Async Await
+
+en el archivo se encuentra la funcion `getTopMoviesIds` la cual va a regresar una promesa con los ids de las peliculas mas populares, donde se solicita n peliculas donde n por omision es igual a 3 y a conitnuacion este es el primer reemplazo que se debe hacer para que then pueda ser reemplazado por await la funcion debe estar con Async de la siguiente forma.
+
+1. Se crea una constante para obtener las peliculas populares
+
+2. Por medio del keyword `await` se manda a llamar a la funcion `getPopularMovies`
+
+3. Se crea la constante `ids` para obtener el id de cada pelicula que se va a obtener
+
+4. De popularMovies solo interesa obtener los primeros n resultados entonces a traves de `slice` se obtiene de 0 a n
+
+5. Por cada una de las peliculas que quede lo que interesa es el id, se usa `map` para transformar un arreglo de objetos a un arreglo de ids 
+
+6. De cada movie se obtiene cada `movide.id`
+
+7. se debe hacer return de los ids
+
+```
+     async function getTopMoviesIds(n = 3) {
+      //return getPopularMovies().then(popularMovies =>
+      //  popularMovies.slice(0, n).map(movie => movie.id)
+      //);
+      // try {
+      //   const popularMovies = await getPopularMovies();
+      // }catch(error){
+      //     console.log(error.message)
+      // }
+      const popularMovies = await getPopularMovies();
+      const ids = popularMovies.slice(0,n).map(movie => movie.id);
+      return ids;
+    }
+```
+
+la funcion `getPopularMovies` tambien se debe pasar a async await
+
+1. Se pasa la funcion a async
+
+2. Se crea una constante `url` para obtener las peliculas populares
+
+3. Se crea una constante de respuesta y hace la peticion de la url
+
+4. se crea una constante data y la respuesta se pasa a `json`
+
+5. retorna los resultados convertidos en `json`
+
+```
+    async function getPopularMovies() {
+      const url = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${apiKey}`;
+      const response = await fetch(url)
+      const data = await response.json()
+      return data.results;
+    }
+```
+
+Ahora se pasa a probar en el navegador en la consola escribiendo getTopMoviesIds se pasa por parametro 2, y como es una promesa se usa `.then` y se imprimen los ids a traves de un `console.log`
+
+`getTopMoviesIds(2).then(ids => console.log(ids))`
+
+![assets-git/101.png](assets-git/101.png)
+
+falta por pasar la funcion `getMovie` a async await
+
+1. Se pasa la funcion a async
+
+2. Se crea la constante url para obtener los datos
+
+3. Se crea la constante response para hacer la peticion a la url
+
+4. Se crea la constante data y se convierte a formato `json`
+
+5. Se retornan los datos
+
+```
+    async function getMovie(id) {
+      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`;
+      const response = await fetch(url)
+      const data = await response.json()
+      return data;
+    }
+```
+
+Despues de que las 3 funciones ya esten usando Async await ahora se va a ejecutar cada una de las funciones en secuencia, en paralelo o en una carrera para eso las lineas de abajo se deben quitar los comentarios para empezar a implementar todo el codigo y hacer funcionar los 3 botones que estan en la pagina
+
+![assets-git/102.png](assets-git/102.png)
+
+Se empieza con la funcion `getTopMopviesInSequence()`
+
+1. Se pasa la funcion a async
+
+2. Se crea la constante ids para obtener la funcion `getTopMoviesIds()`
+
+3. Se crea una constante movies que recibe un arreglo
+
+4. Se crea un loop que itera sobre cada id
+
+5. Con la constante movie se obtiene getMovie() y se pasa como parametro el id
+
+6. Cada vez que se hace la consulta hace push de movie para ir agregando cada pelicula
+
+7. Por ultimo se retorna el arreglo con el resultado
+
+```
+      async function getTopMoviesInSequence() {
+        const ids = await getTopMoviesIds()
+        const movies = []
+
+        for (const id of ids){
+            const movie = await getMovie(id)
+            movies.push(movie)
+        }
+        return movies;
+      }
+```
+
+y mas abajo en el codigo se obtiene el id del boton del html, con la funcion onclick, se implementa la funcion para obtener getTopMoviesInSequence y por ultimo se hace render de cada movie que se consulte
+
+```
+      document.getElementById('sequence').onclick = async function() {
+        const movies = await getTopMoviesInSequence();
+        renderMovies(movies);
+      };
+```
+
+Por ultimo en el navegador hacer click sobre el boton Get Top Movies in Sequence para obtener las 3 peliculas mas populares de la semana
+
+![assets-git/103.png](assets-git/103.png)
+
+Ahora se implementa la funcion `getTopMoviesInParallel()`
+
+1. Se crea la constante ids para obtener los datos de la funcion `getTopMoviesIds()`
+
+2. Se crea la constante moviePromises para convertir los ids en promesas y por cada uno de los id lo convierte a getMovie(id), como `getMovie` es una funcion async, todas estas regresan promesas
+
+3. Se crea la constante movies y lo que va a hacer es esperar todas las promesas pero lo que va a guardar la constante movies son objetos que guardan las peliculas, en caso de que una de las promesas arroje un error, todo va a arrojar un error
+
+4. por ultimo se retorna movies
+
+```
+      async function getTopMoviesInParallel() {
+        const ids = await getTopMoviesIds()
+        const moviePromises = ids.map(id => getMovie(id))
+
+        const movies = await Promise.all(moviePromises)
+        return movies;
+      }
+```
+
+y mas abajo en el codigo se obtiene el id del boton del html, con la funcion onclick, se implementa la funcion para obtener getTopMoviesInparallel y por ultimo se hace render de cada movie que se consulte
+
+```
+      document.getElementById('parallel').onclick = async function() {
+        const movies = await getTopMoviesInParallel();
+        renderMovies(movies);
+      };
+```
+
+Por ultimo en el navegador hacer click sobre el boton Get Top Movies in Parallel para volver a obtener las 3 peliculas
+
+![assets-git/103.png](assets-git/103.png)
+
+y por ultimo obtener cual es la peticion que llega primero a traves de la funcion `getFastestTopMovie()`
+
+1. Se crea la constante ids para obtener los datos de la funcion `getTopMoviesIds()`
+
+2. Se crea la constante moviePromises para convertir los ids en promesas y por cada uno de los id lo convierte a getMovie(id), como `getMovie` es una funcion async, todas estas regresan promesas
+
+3. A traves de la constante movie con el metodo Promise.race() se obtiene la primer peticion que llegue
+
+4. Se retorna movie
+
+```
+      async function getFastestTopMovie() {
+        const ids = await getTopMoviesIds()
+        const moviePromises = ids.map(id => getMovie(id))
+        
+        const movie = await Promise.race(moviePromises)
+        return movie;
+      }
+```
+
+y mas abajo en el codigo se obtiene el id del boton del html, con la funcion onclick, se implementa la funcion para obtener getFastestTopMovie y por ultimo se hace render de cada movie que se consulte
+
+```
+      document.getElementById('fastest').onclick = async function() {
+        const movie = await getFastestTopMovie();
+        renderMovies([movie]);
+      };
+```
+
+Por ultimo en el navegador hacer click sobre el boton Get Fastest Top Movie para obtener una pelicula que en este caso es la primera que llego a la peticion
+
+![assets-git/104.png](assets-git/104.png)
+
+Pero no siempre se obtiene la misma peticion, puede llegar a obtener otra peticion de una de las peliculas, depende de la red, de la API o otra serie de sucesos
+
+![assets-git/105.png](assets-git/105.png)
