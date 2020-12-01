@@ -30,7 +30,7 @@
 
 [Promesas](#Promesas)
 
-[]()
+[Getters y setters](#Getters-y-setters)
 
 []()
 
@@ -3328,3 +3328,64 @@ Por ultimo en el navegador hacer click sobre el boton Get Fastest Top Movie para
 Pero no siempre se obtiene la misma peticion, puede llegar a obtener otra peticion de una de las peliculas, depende de la red, de la API o otra serie de sucesos
 
 ![assets-git/105.png](assets-git/105.png)
+
+## Getters y setters
+
+Los getters y setters son funciones que podemos usar en un objeto para tener propiedades virtuales. Se usan los keywords set y get para crear estas propiedades.
+
+Estas propiedades al ser funciones pueden llevar una validación de por medio y ser usadas con el operador de asignación como si fueran una variable más dentro del objeto.
+
+Para ver el ejemplo abrir el archivo **MediaPlayer.js** que se encuentra en la carpeta **assets** del proyecto y se va a modificar un poco para establecer los **getters** y **setters** en la funcion `initPlugins`
+
+1. Se crea una constante player que recibe un arreglo
+
+2. Se crean cada una de las llaves para acceder a `this.play()`, `this.pause()`, `this.media`
+
+3. Se establece get para obtener el metodo muted
+
+4. Se establece set para establecer un valor falso o verdadero
+
+
+```
+    initPlugins(){
+      const player = {
+        play: () => this.play(),
+        pause: () => this.pause(),
+        media: this.media,
+        get muted() {
+          return this.media.muted;
+        },
+
+        set muted(value) {
+          this.media.muted = value;
+        }
+      };
+
+      this.plugins.forEach(plugin => {
+        plugin.run(player);
+      });
+    };
+```
+
+A continuacion abrir la carpeta **plugins** y abrir el archivo **AutoPlay.js** y modificar por el siguiente bloque de codigo
+
+1. Al ejecutar a player se agrega una validacion
+
+2. Si al hacer AutoPlay no esta muteado entonces la variable dejarla en verdadero para que este muteado
+
+3. ejecutar el metodo `player.play()`
+
+```
+class AutoPlay {
+    run(player){
+        if(!player.muted){
+            player.muted = true;
+        }
+        player.play()
+    }
+}
+
+export default AutoPlay;
+```
+
+Por ultimo en el archivo **index.js** del proyecto, descomentar el plugin Autoplay para probar en el navegador
