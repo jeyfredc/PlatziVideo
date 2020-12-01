@@ -3017,6 +3017,10 @@ y nuevamente el stack queda vacio y ahora si se acaba el programa
 
 El Event Loop es un loop que está ejecutando todo el tiempo y pasa periódicamente revisando las queues y el stack moviendo tareas entre estas dos estructuras.
 
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
 ## Promesas
 
 Para crear las promesas usamos la clase Promise. El constructor de Promise recibe un sólo argumento, un callback con dos parámetros, **resolve** y **reject**. resolve es la función a ejecutar cuando se resuelve y reject cuando se rechaza.
@@ -3329,6 +3333,10 @@ Pero no siempre se obtiene la misma peticion, puede llegar a obtener otra petici
 
 ![assets-git/105.png](assets-git/105.png)
 
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
 ## Getters y setters
 
 Los getters y setters son funciones que podemos usar en un objeto para tener propiedades virtuales. Se usan los keywords set y get para crear estas propiedades.
@@ -3389,6 +3397,10 @@ export default AutoPlay;
 ```
 
 Por ultimo en el archivo **index.js** del proyecto, descomentar el plugin Autoplay para probar en el navegador
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
 
 ## Proxy
 
@@ -3532,3 +3544,8 @@ A conitnuacion abrir el archivo **proxy.html** para empezar a implementar el sig
 Despues de esto nuevamente pasar a la consola y empezar a hacer las busquedas
 
 ![assets-git/109.png](assets-git/109.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
