@@ -34,7 +34,7 @@
 
 [Proxy](#Proxy)
 
-[]()
+[Generators](#Generators)
 
 []()
 
@@ -3549,3 +3549,211 @@ Despues de esto nuevamente pasar a la consola y empezar a hacer las busquedas
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
 
+## Generators
+
+Los generadores son funciones especiales, pueden pausar su ejecución y luego volver al punto donde se quedaron recordando su scope.
+
+Algunas de sus características:
+
+- Los generadores regresan una función.
+
+- Empiezan suspendidos y se tiene que llamar next para que ejecuten.
+
+- Regresan un value y un boolean done que define si ya terminaron.
+
+- yield es la instrucción que regresa un valor cada vez que llamamos a next y detiene la ejecución del generador.
+
+En la carpeta de **ejercicios** crear un archivo llamado **generators.html** que contenga la siguiente estructura de codigo
+
+```
+<html>
+  <head>
+    <title>Generators</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script>
+        // Los generadores son funciones de las que se puede salir y volver a entrar
+        // Su contexto (asociacion de variables) sera conservado entre las reentradas
+        // Cada vez que llamamos next, la ejecución deñ generador va a continuar hasta el proximno yield
+
+        // Podemos hacer generadores infinitos
+
+        // Cuando llamamos next tambien podemos pasar vaores que la funcion recibe
+
+        // Ahora hagamos un ejemplo un poco mas complejo: la secuencia fibonacci
+
+    </script>
+  </body>
+</html>
+```
+
+En el archivo **index.html** agrega la siguiente linea de codigo debajo de proxy
+
+`<li><a href="/ejercicios/generators.html">generators</a></li>`
+
+Abrir el navegador en la ruta http://127.0.0.1:8080/ejercicios/ y seleccionar generators
+
+dentro de la etiqueta script se va a realizar el primer generador
+
+- Hay que tener en cuenta que los generadores se reconocen porque llevan un **`*`** delante del keyword `function`, es decir de esta forma `function*`, porsteriormente el nombre de la funcion
+
+- Otra cosa a tener en cuenta es que para llamar un generador se debe crear una variable que la ejecute
+
+- Para que sea ejecutado el generador se debe llamar con la variables y el metodo `.next()` que es como decirle al programa continue ejecutando
+
+Aqui un ejemplo de un generador simple:
+
+```
+    <script>
+        // Los generadores son funciones de las que se puede salir y volver a entrar
+        // Su contexto (asociacion de variables) sera conservado entre las reentradas
+        // Cada vez que llamamos next, la ejecución deñ generador va a continuar hasta el proximno yield
+        function* simpleGenerator() {
+            console.log('GENERATOR START');
+            console.log('GENERATOR END');
+        }
+
+        //const gen = simpleGenerator()
+
+        
+        // Podemos hacer generadores infinitos
+
+        // Cuando llamamos next tambien podemos pasar vaores que la funcion recibe
+
+        // Ahora hagamos un ejemplo un poco mas complejo: la secuencia fibonacci
+
+    </script>
+```
+
+la constante gen queda comentada para verla en la consola del navegador
+
+Lo primero que se hace es llamarla a traves de `const gen = simpleGenerator()`
+
+y luego se llama a `gen`, en la imagen se puede observar que entre corchetes aparece `{<suspended>}`
+
+![assets-git/110.png](assets-git/110.png)
+
+Los generadores traen el metodo `next()` el cual es una forma de decirle al generador que continue la ejecucion ya continuacion se muestra la ejecucion de lo que debe ejecutar el bloque de codigo de la funcion 
+
+![assets-git/111.png](assets-git/111.png)
+
+Ademas genera un objeto el cual es el valor de retorno del generador, el cual tiene 2 propiedades `value` y `done`.
+
+`done` es true porque el generador acabo su ejecucion}
+
+para poder tener un false debe utilizar el keyword `yield` que lo que hace en terminos simples es parar la ejecucion y hasta que no se indique con `next()` la continuacion la ejecucion no sera true
+
+en el archivo despues de `console.log('GENERATOR START');` agregar debajo el keyword `yield;`
+
+y ahora ver el ejemplo en el navegador, donde primero se para la ejecucion y aparece solamente GENERATOR START y `done` aparece en False
+
+![assets-git/112.png](assets-git/112.png)
+
+Despues de continuar la ejecucion y aparece GENERATOR END `done` cambia a true
+
+![assets-git/113.png](assets-git/113.png)
+
+Con `yield` tambien se pueden generar valores y hasta que no se terminen de ejecutar todos los `yield` no va a parar la ejecucion.
+
+```
+        function* simpleGenerator() {
+            console.log('GENERATOR START');
+            yield 1;
+            yield 2;
+            yield 3;
+            console.log('GENERATOR END');
+        }
+
+```
+
+Cuando se ejecuta en el navegador empiezan a aparecer los valores que antes no estaban en `value` y hasta no llegar a GENERATOR END no termina la ejecucion
+
+![assets-git/114.png](assets-git/114.png)
+
+Tambien se puede hacer una especie de Loop infinito aprovechado a `yield` para que detenga la ejecucion y por ejemplo se pueda generar ids infinitamente, normalmente si no se usara este `keyword` apareceria un error en consola
+
+```
+    <script>
+        // Los generadores son funciones de las que se puede salir y volver a entrar
+        // Su contexto (asociacion de variables) sera conservado entre las reentradas
+        // Cada vez que llamamos next, la ejecución deñ generador va a continuar hasta el proximno yield
+        function* simpleGenerator() {
+            console.log('GENERATOR START');
+            yield 1;
+            yield 2;
+            yield 3;
+            console.log('GENERATOR END');
+        }
+
+        //const gen = simpleGenerator()
+
+
+        // Podemos hacer generadores infinitos
+
+        function* idMaker() {
+            let id = 1;
+            while(true) {
+                yield id;
+                id = id +1;
+            }
+        }
+
+        // Cuando llamamos next tambien podemos pasar vaores que la funcion recibe
+
+        // Ahora hagamos un ejemplo un poco mas complejo: la secuencia fibonacci
+
+    </script>
+```
+
+Se genera una constante en la consola del navegador llamando a la funcion
+
+Y en este caso se puede ejecutar tantas veces como se quiera con `next()`
+
+![assets-git/115.png](assets-git/115.png)
+
+Si por ejemplo se quiere devolver a un valor especial `yield` tambien puede establecer un valor como si fuera booleano para ello otro ejemplo donde se crea la variable reset
+
+Dentro del bloque de codigo se hace a reset = yield id;
+
+Se pone una condicion indicando que si reset es true entonces id va a ser igual a 1 y en ese momento todo se va a resetear, caso contrario si es false continuara su ejecucion
+
+En el navegador se ve el ejemplo hasta que se pasa true como parametro para resetear el generador a 
+
+![assets-git/116.png](assets-git/116.png)
+
+Los generadores se prestan para crear funciones eficientes en memoria, para esto se va a desarrollar la secuencia de fibonacci que es 1, 1, 2, 3, 5. El proximo numero siempre va a ser la suma de los ultimos 2 numeros de la lista
+
+para esto se crea una funcion llamaba fibonacci teniendo en cuenta que los primeros numeros van a ser 1 y 1 los cuales son asignados a `a` y `b`
+
+Luego se crea una constante que guarde al siguiente numero de `a + b` 
+
+`a` pasa a ser b y `b` pasa a ser el siguiente numero
+
+Por ultimo se agrega yield de la constante para obtener el valor 
+
+```
+        // Ahora hagamos un ejemplo un poco mas complejo: la secuencia fibonacci
+
+        function* fibonacci() {
+            let a = 1;
+            let b = 1;
+            while(true) {
+                const nextNumber = a + b;
+                a = b;
+                b = nextNumber;
+                yield nextNumber;
+            }
+        }
+```
+
+En el navegador se ejecuta generando la constante para llamar a la funcion y empezar a ver la secuencia de fibonacci 
+
+![assets-git/117.png](assets-git/117.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
