@@ -38,7 +38,7 @@
 
 [Fetch - Cómo cancelar peticiones](#Fetch---Cómo-cancelar-peticiones)
 
-[]()
+[IntersectionObserver](#IntersectionObserver)
 
 []()
 
@@ -3973,6 +3973,392 @@ Cuando se cancela un fetch arroja un error y es bueno tratar estos errores con `
 Se ejecuta el codigo, se detiene la imagen y se muestra el error por consola
 
 ![assets-git/126.png](assets-git/126.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## IntersectionObserver
+
+El **IntersectionObserver** es una API del DOM que sirve para observar elementos y si cruzan un umbral que nosotros definimos nos lo va a notificar para tomar acción.
+
+El umbral se define por el porcentaje que tiene intersección con el viewport, con la parte visible de nuestra página
+
+En el proyecto se va a añadir una seccion de comentarios en el **index.html** 
+
+Imaginar que por ejemplo un usuario como se hace en Youtube empieza a leer los comentarios de otra persona y se requiere que el video se detenga para que la persona puda leer estos comentarios y cuando regresa a cierto porcentaje o umbral de pantalla de video la pantalla vuelva a hacer play
+
+Dentro del **index.html** del proyecto entonces se agrega esta modificacion despues del cierre de la etiqueta `</main>` y antes de hacer la apertura de la etiqueta `<script>` y lo que esta a conitnuacion seran los comentarios que se implementaron en el proyecto
+
+```
+<h2>Comments</h2>
+    <ul>
+      <li>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe natus
+        non officiis a repellendus molestias ipsum aspernatur, adipisci
+        temporibus vel maiores omnis ad facere nihil asperiores. Aspernatur odit
+        esse eos.
+      </li>
+      <li>
+        Numquam eaque deleniti, debitis saepe vero, odit quidem ut dolor nemo,
+        exercitationem commodi illo minus id ratione minima? Enim eum
+        consequatur eveniet unde accusamus alias ipsam sed blanditiis dicta!
+        Sequi.
+      </li>
+      <li>
+        Ipsam laudantium quae aliquid nulla eligendi atque molestias ratione
+        libero. Omnis corrupti doloribus reiciendis incidunt eos voluptatum vero
+        optio modi ab excepturi soluta, assumenda unde eius tempora provident.
+        Labore, corporis?
+      </li>
+      <li>
+        Fugit, perferendis ullam, iure necessitatibus quo nesciunt est possimus
+        vitae reprehenderit ratione hic rerum optio, ipsam aperiam quidem
+        recusandae ipsa. Minus porro nemo iste dolorem labore veritatis quae, ea
+        vitae.
+      </li>
+      <li>
+        Atque maiores necessitatibus, error mollitia in ullam eaque! Optio
+        adipisci dolores neque quaerat commodi eos consequatur repellat
+        necessitatibus itaque pariatur, accusamus ad quidem aliquam iusto, quae,
+        inventore eaque quo doloribus?
+      </li>
+      <li>
+        Amet vel error minima ipsam fugit. Quam, modi sunt autem porro ab
+        deserunt nobis accusantium expedita exercitationem error eos nisi ullam
+        architecto cumque vero illum atque corporis, iste, suscipit minus!
+      </li>
+      <li>
+        Dolores accusantium itaque voluptatum totam a molestias recusandae sed
+        dolor repellendus tempora rem dolorum, eos delectus, nihil obcaecati
+        quaerat unde molestiae repudiandae laborum quia! Repudiandae molestias
+        sunt recusandae assumenda numquam.
+      </li>
+      <li>
+        Eveniet quisquam pariatur fuga voluptas impedit ad nihil corporis
+        maiores, dolorem, libero a voluptatem facere autem aliquid? Dolorem
+        impedit quasi iste, qui quis dolor, doloribus inventore corrupti id
+        nostrum possimus.
+      </li>
+      <li>
+        Commodi, quisquam facere voluptatum nostrum id animi reiciendis
+        provident! In ea optio voluptas similique ullam, saepe dicta debitis
+        iusto, quasi omnis aperiam voluptatem sequi eius assumenda enim eaque
+        esse nesciunt!
+      </li>
+      <li>
+        Dolor tenetur aliquam voluptatibus nobis, iste praesentium voluptatem
+        reiciendis similique eveniet ducimus nostrum quasi architecto molestias
+        omnis, fuga ea dolorum nulla vitae! Fugit nisi distinctio tenetur in,
+        omnis sunt veniam?
+      </li>
+      <li>
+        Laboriosam numquam consequuntur exercitationem voluptate similique,
+        facere maiores expedita iure error libero tenetur debitis? Consequatur
+        ab quidem nesciunt ea numquam minus accusantium soluta voluptatem
+        quaerat, dignissimos aliquid id dicta enim.
+      </li>
+      <li>
+        A quasi commodi delectus voluptatum ut, optio officiis quidem eligendi.
+        Ex excepturi id quidem sint, temporibus, explicabo ea libero
+        voluptatibus, fuga minima facere vitae consequuntur modi officiis eum
+        dignissimos. Sit.
+      </li>
+      <li>
+        Quod et recusandae nobis iste maxime. Nisi, magnam tempore. Laudantium
+        voluptatem, consequatur culpa nesciunt aspernatur ullam deserunt. Quae,
+        est accusantium quis temporibus accusamus aliquam quidem eos ea
+        laboriosam dolorem reiciendis!
+      </li>
+      <li>
+        Ea, optio maxime iusto totam distinctio laudantium itaque aperiam
+        quisquam corporis expedita consectetur reprehenderit tempora accusamus
+        labore laborum, natus quod ipsum sed tenetur officiis! Repellendus,
+        voluptates odit! Assumenda, unde. Itaque.
+      </li>
+      <li>
+        Odit veritatis neque nihil impedit ratione officia, quas quo repellendus
+        id? A sit quam sapiente exercitationem, ea eaque, magnam similique et
+        mollitia adipisci veniam perferendis tempore corrupti impedit deleniti
+        voluptatem?
+      </li>
+      <li>
+        Ratione laudantium rem vitae pariatur fugit dicta sapiente at fugiat
+        nulla optio maiores illo nemo animi eaque eveniet blanditiis, nisi ipsum
+        libero natus distinctio ipsam? Vero nisi non debitis cupiditate.
+      </li>
+      <li>
+        Quae impedit voluptatem consectetur, ducimus quasi voluptatum saepe
+        excepturi! Neque sequi beatae ab nulla nisi, soluta minus porro minima
+        optio eaque, distinctio adipisci, ea asperiores labore obcaecati quidem
+        qui veritatis.
+      </li>
+      <li>
+        Reiciendis autem tenetur cumque excepturi sapiente tempore quos
+        molestiae perspiciatis expedita laudantium voluptas rerum numquam,
+        assumenda adipisci fugit quia quod perferendis saepe laborum libero eum?
+        Animi cum molestiae adipisci officiis.
+      </li>
+      <li>
+        Ea, ut repudiandae. Nostrum dicta minus, placeat doloribus harum magnam
+        veniam aliquam aut fugiat neque perferendis consectetur impedit expedita
+        sequi natus esse cumque rerum deserunt repudiandae eius. Unde, dolorem
+        consectetur?
+      </li>
+      <li>
+        Fuga vero nihil obcaecati suscipit blanditiis explicabo ipsam
+        reiciendis. Voluptatem neque asperiores nobis, ipsa molestiae distinctio
+        officiis rem quae suscipit illum optio, debitis quaerat assumenda
+        nostrum. Totam labore iste eos!
+      </li>
+      <li>
+        Et sint illo facere assumenda laudantium porro quibusdam perspiciatis
+        provident deleniti deserunt vero magnam voluptatem corrupti dolore
+        adipisci, quo molestiae, mollitia illum. Facere officiis nam praesentium
+        deserunt, rem placeat perferendis!
+      </li>
+      <li>
+        Nisi facere accusantium reprehenderit esse illo architecto minus
+        inventore quos eius tempore exercitationem doloribus, nihil, aut ipsa
+        expedita molestias incidunt earum, natus blanditiis veritatis. Quas
+        architecto expedita laborum esse inventore!
+      </li>
+      <li>
+        Doloribus facere quis non repellendus exercitationem rem aliquam eum,
+        numquam blanditiis deleniti error ipsum laborum, modi adipisci nam quae
+        amet molestiae facilis earum. Quisquam earum labore accusantium nostrum
+        deleniti natus.
+      </li>
+      <li>
+        Odit ducimus error hic repudiandae, vitae iure voluptatibus esse velit
+        suscipit voluptas similique repellendus delectus eveniet quos repellat
+        cupiditate alias impedit placeat labore unde doloremque nemo at nobis
+        eos! Quis!
+      </li>
+      <li>
+        Maiores fugiat voluptates odio voluptatem et laboriosam aliquam dolorum
+        perferendis nulla totam. At dolores quaerat eos consequuntur nemo.
+        Dignissimos asperiores cupiditate tempora repudiandae aut perferendis ut
+        eius corrupti quia porro!
+      </li>
+      <li>
+        Tempora hic at repudiandae accusamus architecto possimus obcaecati quia,
+        earum, quidem in sit! Voluptatum error deserunt harum labore delectus,
+        consectetur culpa architecto tenetur quae amet, esse rem et?
+        Reprehenderit, recusandae.
+      </li>
+      <li>
+        Sed sequi ipsa aut ad ex temporibus earum? Eos, magnam qui! Iste
+        excepturi nulla rem neque quos sit quas, corrupti consectetur! Earum rem
+        voluptatibus a maxime tempore, saepe tenetur necessitatibus.
+      </li>
+      <li>
+        Mollitia inventore corrupti omnis eaque voluptates architecto animi
+        libero ratione ut aperiam, modi velit? Enim assumenda sunt, placeat amet
+        adipisci sed quaerat. Quisquam consequatur quo praesentium odit laborum
+        voluptates impedit.
+      </li>
+      <li>
+        Obcaecati delectus ex magni sed veritatis vitae architecto, iusto
+        assumenda laborum perspiciatis doloribus perferendis? Totam accusantium
+        quisquam nesciunt eos doloremque vel sequi quae nihil officia magnam
+        facere, earum ea aspernatur.
+      </li>
+      <li>
+        Vitae, eius culpa quaerat iure voluptate voluptates incidunt deleniti
+        quisquam reiciendis saepe nostrum corporis asperiores repudiandae quas
+        labore rem fugiat quia perspiciatis excepturi cum voluptatum optio!
+        Consequuntur odit sint veritatis?
+      </li>
+      <li>
+        Perferendis animi hic unde quisquam, atque amet totam obcaecati
+        provident incidunt quas itaque magnam adipisci tempora quo qui expedita.
+        Quae ea alias corrupti laboriosam reprehenderit enim eveniet eligendi at
+        officiis.
+      </li>
+      <li>
+        Aliquid at animi illum blanditiis vitae fuga deleniti soluta! Harum,
+        nulla ea! Facilis porro consequatur illum saepe earum, molestias nemo
+        eligendi quod labore aliquam officia in sit. Iure, obcaecati sit!
+      </li>
+      <li>
+        Blanditiis facere adipisci laudantium eveniet minus? Sint voluptas
+        soluta asperiores ea, cumque quasi ad quia, nesciunt facilis tenetur
+        natus rem. Id incidunt fuga quos perspiciatis veniam iste voluptatum
+        iure laborum?
+      </li>
+      <li>
+        Minus in provident eligendi vel eum dolores saepe sed cupiditate
+        molestiae! Odio sit consequatur eos molestias voluptate accusamus ex
+        quos aspernatur necessitatibus minus quo, tempora eum a quod eius quam.
+      </li>
+      <li>
+        Esse quae iure maxime ullam consequatur beatae dolores? Ad dolore neque
+        libero dignissimos vero obcaecati magnam eligendi similique accusantium
+        cupiditate, repudiandae perspiciatis. Ipsum, porro nobis aut beatae
+        delectus voluptatem maiores!
+      </li>
+      <li>
+        Et dolorem alias qui veritatis ut sequi minus labore, saepe similique
+        enim, dolorum, laboriosam optio? Exercitationem, accusamus! Laboriosam
+        quos qui, at natus ipsam nulla eligendi, ut quisquam sit delectus
+        perspiciatis!
+      </li>
+      <li>
+        Repellendus debitis at amet, sint possimus fugiat explicabo corporis.
+        Omnis delectus voluptatibus amet. Quam impedit aut, magnam laudantium
+        error maxime animi veritatis, ad eos molestiae, omnis voluptates ullam
+        autem nostrum?
+      </li>
+      <li>
+        Necessitatibus eos corporis quidem, tempora voluptatibus repellendus
+        velit soluta possimus, porro nesciunt deserunt laborum ipsum cupiditate
+        quibusdam natus. Praesentium rerum in pariatur nisi modi consequatur
+        corporis labore sunt impedit animi.
+      </li>
+      <li>
+        Fugit, natus similique fugiat eligendi, placeat asperiores eius
+        perspiciatis optio et, possimus culpa inventore deleniti impedit tempora
+        laborum? Ducimus magni cumque asperiores eaque quidem numquam laborum
+        iusto id itaque blanditiis.
+      </li>
+      <li>
+        Ipsam error id, laboriosam perspiciatis nemo molestias natus
+        voluptatibus velit beatae veritatis sit odio mollitia non ea, aliquid
+        consequatur dignissimos aliquam consequuntur veniam dolores corrupti
+        itaque consectetur expedita. Libero, repudiandae?
+      </li>
+    </ul>
+```
+
+A continuacion abrir el archivo **index.js** que se encuentra en la carpeta **assets**
+
+A continuacion del import de `AutoPlay` añadir una linea mas la cual se va a llamar `AutoPause` el cual sera el proximo plugin a implementar
+
+`import AutoPause from './plugins/AutoPause.js'`
+
+el `Autopuse` ahora hay que pasarlo a lista de plugins
+
+```
+import MediaPlayer from './MediaPlayer.js'
+import AutoPlay from './plugins/AutoPlay.js'
+import AutoPause from './plugins/AutoPause.js'
+
+const video = document.querySelector('video');
+const buttonPlay = document.querySelector('#play');
+const buttonSonido = document.querySelector('#sonido');
+const player = new MediaPlayer({ movie : video,
+     plugins : [new AutoPlay(), new AutoPause()] 
+})
+
+buttonPlay.onclick = () => player.ejec()
+buttonSonido.onclick = () => player.sonido()
+```
+
+Ahora en la carpeta **pluggins** se debe crear el archivo **AutoPause.js**
+
+Se crea una clase `AutoPause` los plugin reciben un player cuando se ejecuta run y se crea una constante para inicializar la clase **IntersectionObserver** la cual recibe 2 parametros que es `handler` y `config`
+
+```
+class AutoPause{
+    run(player){
+        const observer = new IntersectionObserver(handler, config)
+    }
+}
+
+export default AutoPause;
+```
+
+El handler se va a pasar por un metodo que se va a llamar `handleIntersection` y al objeto de configuracion lo que hay que pasarle es un **threshold(umbral)** y lo que hace este objeto es definir que porcentaje del elemento tiene que tener interseccion con el contenedor. Es decir por ejemplo se ha recorrido el 25% de la pantalla, en este momento va a existir un aviso y nuevamente cuando se regrese y se supere ese 25% va a salir otro aviso.
+
+Luego va a ver un observador que se va a llamar por `player.media` es decir el usuario es el que esta observando ese elemento
+
+Cuando IntersectionObserver llame a `handleIntersection` le va a pasar una lista de `entries`, la lista de entries son todos los objetos que se estan observando que en este caso es `observer.observe(player.media)`
+
+Como solo hay un unico elemento que esta observando se pasa a la lista `const entry = entries[0];` y luego se despliega por consola
+
+```
+class AutoPause{
+    run(player){
+        const observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: 0.25
+        })
+
+        observer.observe(player.media)
+    }
+
+    handleIntersection(entries) {
+        const entry = entries[0];
+        console.log(entry);
+    }
+}
+
+export default AutoPause;
+```
+
+Entonces se abre el navegador y automaticamente el video se reproduce y aparece una serie de objetos con la pantalla completa
+
+![assets-git/127.png](assets-git/127.png)
+
+Cuando se supera el umbral del 25% salen otro objetos en consola
+
+![assets-git/128.png](assets-git/128.png)
+
+Cuando aparece `intersectionRatio` se indica que se ha hecho un scroll hacia abajo que deberia ser el momento en que se detenga el video.
+
+cuando se hace scroll hacia arriba aparece otra interseccion que es la indica donde deberia continuar el video.
+
+![assets-git/129.png](assets-git/129.png)
+
+Para implementar la funcion va a ser necesario poder usar play o pause al player por tanto se debe crear una instancia de player con `this.player = player;`, a esto se le llama crear una instancia de la clase
+
+Para poder utilizar el umbral es decir el `treshold` se crea a traves de un constructor para poder utilizarlo en la configuracion y el metodo `handleIntersection` para despues crear una validacion
+
+Para crear la validacion se hace una constante con una condicion
+
+Si la intersenccion que lleva es mayor o igual a el umbral entonces se dice que esta visible, caso contrario no lo esta y se ejecuta pause
+
+Dentro del constructor se debe agregar `this.handleIntersection = this.handleIntersection.bind(this)` por que quien llama a la funcion `this.handleIntersection` es `IntersectionObserver` y hay que recordar que bind recibe como primer y único argumento el this. No ejecuta la función, sólo regresa otra función con el nuevo this integrado y esto es para poder hacer uso de la clase `IntersectionObserver`.
+
+```
+class AutoPause{
+    constructor() {
+        this.threshold = 0.25;
+        this.handleIntersection = this.handleIntersection.bind(this);
+    }
+
+    run(player){
+        this.player = player;
+
+
+        const observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: this.threshold,
+        });
+
+        observer.observe(this.player.media);
+    }
+
+    handleIntersection(entries) {
+        const entry = entries[0];
+
+        const isVisible = entry.intersectionRatio >= this.threshold;
+
+        if(isVisible) {
+            this.player.play();
+        }else {
+            this.player.pause();
+        }
+    }
+}
+
+export default AutoPause;
+```
+
+Nuevamente al hacer scroll hacia abajo ahora se va a ejecutar pause y al hacer scroll hacia arriba se va a ejecutar play
+
+![assets-git/130.png](assets-git/130.png)
+
+![assets-git/131.png](assets-git/131.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
