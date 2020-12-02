@@ -36,7 +36,7 @@
 
 [Generators](#Generators)
 
-[]()
+[Fetch - Cómo cancelar peticiones](#Fetch---Cómo-cancelar-peticiones)
 
 []()
 
@@ -3753,6 +3753,226 @@ Por ultimo se agrega yield de la constante para obtener el valor
 En el navegador se ejecuta generando la constante para llamar a la funcion y empezar a ver la secuencia de fibonacci 
 
 ![assets-git/117.png](assets-git/117.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Fetch - Cómo cancelar peticiones
+
+La peticiones AJAX permitieron en su tiempo hacer peticiones asíncronas al servidor sin tener que detener la carga de la página, esto se hacia asincronamente, esto llego con **XML HttpRequest** . Hoy en día se utiliza la función **fetch** para esto ademas de utilizar **promises**, pero en los inicios de **fetch**, habia un problema, y era que una vez se hacia una peticion, no habia forma de detenerla. Esto es importante en aplicaciones de una sola pagina donde el usuario pueda salirse de ella pero no tuvo que recargar todo y en ese momento quedo una llamada y al recargarla ocurrio. La mejor forma para que no siga sucediendo esa llamada es deter la peticion y de esta forma se mejora el rendimiento de la aplicacion
+
+Con **fetch**, actualmente tenemos algo llamado **AbortController** que nos permite enviar una señal a una petición en plena ejecución para detenerla.
+
+en la carpeta de **ejercicios** crear un archivo llamado **abort-fetch.html** con el siguiente bloque de codigo
+
+```
+<html>
+  <head>
+    <title>Abort Fetch</title>
+  </head>
+
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <img id="huge-image" height="400"
+    src="https://images.pexels.com/photos/974470/nature-stars-milky-way-galaxy-974470.jpeg?q=100" />
+
+    <button id="load">Load HUGE Image</button>
+    <button id="stop" disabled>Stop Fetching</button>
+
+    <script>
+      const url =
+        'https://images.pexels.com/photos/974470/nature-stars-milky-way-galaxy-974470.jpeg?q=100';
+      const img = document.getElementById('huge-image');
+      const loadButton = document.getElementById('load');
+      const stopButton = document.getElementById('stop');
+
+      function startLoading() {
+        loadButton.disabled = true;
+        loadButton.innerText = 'Loading...';
+        stopButton.disabled = false;
+      }
+
+      function stopLoading() {
+        loadButton.disabled = false;
+        loadButton.innerText = 'Load HUGE Image';
+        stopButton.disabled = true;
+      }
+
+      loadButton.onclick = async function() {
+        startLoading();
+        stopLoading();
+      }
+
+      stopButton.onclick = function() {
+        stopLoading();
+      };
+    
+    </script>
+  </body>
+</html>
+```
+
+Para entenderlo analizar detalladamente que esta haciendo cada funcion, de manera automatica se esta cargando la imagen porque esta dentro de las etiquetas html
+
+En el archivo **index.html** agrega la siguiente linea de codigo debajo de generators
+
+`<li><a href="/ejercicios/abort-fetch.html">abort-fetch</a></li>`
+
+Abrir el navegador en la ruta http://127.0.0.1:8080/ejercicios/ y seleccionar abort-fetch
+
+Actualmente en el navegador esta la carga automatica de la imagen y se puede ver de esta forma 
+
+![assets-git/118.png](assets-git/118.png)
+
+Al abrir la consola desplegar hasta la pestaña **Network**
+
+habilitar Disable cache, All y recargar la pagina
+
+![assets-git/119.png](assets-git/119.png)
+
+En la parte de abajo se ve los recursos que se cargaron en el navegador y el peso de la imagen se ve que es de 13.8Mb por lo que si se estuviera en una conexion 3G probablemente la imagen cargaria mucho mas lento, para probar esto habilitar una prueba en Fast 3G en el navegador
+
+![assets-git/120.png](assets-git/120.png)
+
+Automaticamente la pagina se va a recargar y se puede observar cuanto tarda en cargar la misma imagen que antes parecia cargar de manera inmediata
+
+![assets-git/121.png](assets-git/121.png)
+
+y el navegador queda haciendo este proceso
+
+En el archivo **abort-fetch.html** existen 2 botones 1 que carga la imagen y otro que la detiene, anteriormente la imagen se cargaba de forma automatica porque estaba en las etiquetas html.
+
+Ahora se va a eliminar el `src` que la cargaba para empezar a construir el codigo de JavaScript
+
+`<img id="huge-image" height="400" />`
+
+Dentro del `loadButton` se construye la peticion con await, se hace la peticion con fetch de la url
+
+Se utiliza el metodo blob que es el binario de la peticion que se esta haciendo, es la imagen pero en forma binaria 
+
+pero no se puede pasar un binario a una imagen para eso se utiliza `URL.createObjectURL` y lo que recibe es un `blob`
+
+El navegador se encarga de convertir a una url, la regresa y esta ya se puede asignar a la imagen
+
+```
+      loadButton.onclick = async function() {
+        startLoading();
+
+        const response = await fetch(url)
+        const blob = await response.blob()
+        const imgUrl = URL.createObjectURL(blob)
+        img.src = imgUrl;
+        
+        stopLoading();
+      }
+```
+
+Ahora lo que hay que hacer es verificar en el navegador que al hacer click sobre Load HUGE Image cargue la imagen
+
+![assets-git/122.png](assets-git/122.png)
+
+![assets-git/123.png](assets-git/123.png)
+
+Aun se puede notar que la imagen esta cargando de forma lenta
+
+A continuacion en el fetch se va a agregar un objeto de configuracion al cual se le va a pasar un objeta que se llama la señal
+
+la señal va a venir de AbortController y como es una clase se debe instanciar y esta se va a llamar `controller`
+
+```
+      loadButton.onclick = async function() {
+        startLoading();
+
+        let controller = new AbortController();
+
+        const response = await fetch(url , {signal: controller.signal });
+        const blob = await response.blob();
+        const imgUrl = URL.createObjectURL(blob);
+        img.src = imgUrl;
+
+        stopLoading();
+      }
+```
+
+Pero no se va a detener en la funcion que carga es decir `loadButton`. Esta se debe detener en `stopButton` por tanto las funciones deben tener acceso a la variable controller y hay que llevarla mas arriba, es decir declararla fuera del scope de `loadButton` e inicializar en `loadButton`
+
+Dentro de la funcion stopButton llamar a `controller.abort()` para detener la carga de la imagen
+
+```
+    <script>
+      const url =
+        'https://images.pexels.com/photos/974470/nature-stars-milky-way-galaxy-974470.jpeg?q=100';
+      const img = document.getElementById('huge-image');
+      const loadButton = document.getElementById('load');
+      const stopButton = document.getElementById('stop');
+      let controller;
+
+      function startLoading() {
+        loadButton.disabled = true;
+        loadButton.innerText = 'Loading...';
+        stopButton.disabled = false;
+      }
+
+      function stopLoading() {
+        loadButton.disabled = false;
+        loadButton.innerText = 'Load HUGE Image';
+        stopButton.disabled = true;
+      }
+
+      loadButton.onclick = async function() {
+        startLoading();
+
+        controller = new AbortController();
+        const response = await fetch(url , {signal: controller.signal });
+        const blob = await response.blob();
+        const imgUrl = URL.createObjectURL(blob);
+        img.src = imgUrl;
+
+        stopLoading();
+      }
+
+      stopButton.onclick = function() {
+        controller.abort();
+        stopLoading();
+      };
+    
+    </script>
+```
+
+Ahora en el navegador ya se puede hacer la ejecucion de la imagen dando click en el boton Load HUGE Image
+
+![assets-git/124.png](assets-git/124.png)
+
+y detenerlo con Stop Fetching, pero tambien se puede observar que sale un error 
+
+![assets-git/125.png](assets-git/125.png)
+
+Cuando se cancela un fetch arroja un error y es bueno tratar estos errores con `try catch` capturando el error en consola
+
+```
+      loadButton.onclick = async function() {
+        startLoading();
+
+        controller = new AbortController();
+        try{
+            const response = await fetch(url , {signal: controller.signal });
+            const blob = await response.blob();
+            const imgUrl = URL.createObjectURL(blob);
+            img.src = imgUrl;
+        } catch(error){
+            console.log(error.message);
+        }
+
+        stopLoading();
+      };
+```
+
+Se ejecuta el codigo, se detiene la imagen y se muestra el error por consola
+
+![assets-git/126.png](assets-git/126.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
