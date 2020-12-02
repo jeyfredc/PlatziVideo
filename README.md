@@ -40,7 +40,7 @@
 
 [IntersectionObserver](#IntersectionObserver)
 
-[]()
+[VisibilityChange](#VisibilityChange)
 
 []()
 
@@ -4359,6 +4359,120 @@ Nuevamente al hacer scroll hacia abajo ahora se va a ejecutar pause y al hacer s
 ![assets-git/130.png](assets-git/130.png)
 
 ![assets-git/131.png](assets-git/131.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## VisibilityChange
+
+El **visibilityChange** forma parte del API del DOM llamado **Page Visibility** y nos deja saber si el elemento es visible, pude ser usado para ejecutar una acción cuando cambiamos de pestaña. Así podemos ahorrar batería y mejorar la UX.
+
+en la consola se puede implementar al cambiar de ventana con esto 
+
+```
+document.addEventListener("visibilityChange", () => {
+    console.log(document.visibilityState)
+})
+```
+
+y luego implementar en  el archivo **AutoPause.js**, se llama de esta forma `document.addEventListener("visibilitychange", this.handleVisibilityChange)` donde `handleVisibilityChange` va a ser otro metodo de la clase
+
+```
+    run(player){
+        this.player = player;
+
+        const observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: this.threshold,
+        });
+
+        observer.observe(this.player.media);
+
+        document.addEventListener("visibilitychange", this.handleVisibilityChange)
+    }
+```
+
+y a continuacion del metodo `handleIntersection` se crea el metodo `handleVisibilityChange` en este metodo se crea una constante `isVisble` que va a detectar el estado de la pagina, si esta visible continua en ejecucion de lo contrario esta en `hidden` y por lo tanto esta oculto
+
+```
+    handleVisibilityChange(){
+        const isVisible = document.visibilityState === "visible"
+
+        if(isVisible) {
+            this.player.play();
+        }else {
+            this.player.pause();
+        }
+    }
+```
+
+Tambien se debe crear el this en el constructor del metodo 
+
+```
+class AutoPause{
+    constructor() {
+        this.threshold = 0.25;
+        this.handleIntersection = this.handleIntersection.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    }
+
+```
+
+De esta forma el archivo **AutoPause.js** queda con los siguientes bloques de codigo
+
+```
+class AutoPause{
+    constructor() {
+        this.threshold = 0.25;
+        this.handleIntersection = this.handleIntersection.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    }
+
+    run(player){
+        this.player = player;
+
+        const observer = new IntersectionObserver(this.handleIntersection, {
+            threshold: this.threshold,
+        });
+
+        observer.observe(this.player.media);
+
+        document.addEventListener("visibilitychange", this.handleVisibilityChange)
+    }
+
+    handleIntersection(entries) {
+        const entry = entries[0];
+
+        const isVisible = entry.intersectionRatio >= this.threshold;
+
+        if(isVisible) {
+            this.player.play();
+        }else {
+            this.player.pause();
+        }
+    }
+
+    handleVisibilityChange(){
+        const isVisible = document.visibilityState === "visible"
+
+        if(isVisible) {
+            this.player.play();
+        }else {
+            this.player.pause();
+        }
+    }
+}
+
+export default AutoPause;
+```
+
+Para probar que el plugin este funcionando habilitar el sonido del video va a aparecer un icono de sonido sobre la pestaña del navegador mientras se este escuchando
+
+![assets-git/132.png](assets-git/132.png)
+
+si por lo contrario se cambia de pestaña el icono va a desaparecer y tambien se notara que el sonido ya se deja de escuchar
+
+![assets-git/133.png](assets-git/133.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
