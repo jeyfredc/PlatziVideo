@@ -4837,3 +4837,13 @@ Se desactiva la casilla offline y nuevamente dirigir a Network y verificar que a
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
+
+___
+
+**Nota:** Puedes ver el complemento del curso en Typescript en el siguiente [enlace](https://github.com/jeyfredc/Typescript-Comp-Js-Prof.) 
+
+![assets-git/141.png](assets-git/141.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
