@@ -11,3 +11,7 @@ const player = new MediaPlayer({ movie : video,
 
 buttonPlay.onclick = () => player.ejec()
 buttonSonido.onclick = () => player.sonido()
+
+if('serviceWorker' in navigator) {
+     navigator.serviceWorker.register('/sw.js')
+}

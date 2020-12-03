@@ -42,7 +42,7 @@
 
 [VisibilityChange](#VisibilityChange)
 
-[]()
+[Service Workers](#Service-Workers)
 
 []()
 
@@ -128,7 +128,7 @@ Automaticamente se va a abrir el archivo **index.html** en el navegador
 
 la ruta que aparece es **127.0.0.1:8080** es lo mismo que escribir **localhost:8080**
 
-En el archivo **index.html** añadir las etiquetas de script para empezar a ejecutar y compilar el codigo de bajo de la etiqueta que cierra main `</main>`
+En el archivo **index.html** añadir las etiquetas de script para empezar a ejecutar y compilar el codigo debajo de la etiqueta que cierra main `</main>`
 
 ```
 <html>
@@ -4473,6 +4473,366 @@ Para probar que el plugin este funcionando habilitar el sonido del video va a ap
 si por lo contrario se cambia de pestaña el icono va a desaparecer y tambien se notara que el sonido ya se deja de escuchar
 
 ![assets-git/133.png](assets-git/133.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Service Workers
+
+Sirven para hacer que nuestras aplicaciones funcionen Offline.
+
+Muy usados en las **Progressive Web Apps (PWA)** los ServiceWorkers son una capa que vive entre el navegador y el Internet.
+
+Parecido a como lo hacen los proxys van a interceptar peticiones para guardar el resultado en cache y la próxima vez que se haga la petición tomar del cache ese resultado.
+
+Cuando el resultado ya esta en cache ya no es necesario tener que pedirlo a internet, usando **Service Workers** en el momento que el un computador, un celular o un dispositivo con conexion a internet no la tenga, no va a pasar nada y el usuario podra seguir utilizando la pagina en modo **offline**
+
+Para empezar abrir el archivo **index.js** y a continuacion de `buttonSonido.onclick = () => player.sonido()` agregar una condicion para que ayude a detectar si el navegador del usuario le da apoyo a los services workers; No todos los navegadores tienen services workers.
+
+Despues de comprobar que el navegador tenga service worker se pasa a registrar un archivo en el computador del usuario de esta forma
+
+```
+if('serviceWorwer' in navigator) {
+     navigator.serviceWorker.register('/sw.js')
+}
+```
+
+Es posible que ocurra un error durante el registro, entonces lo que se debe hacer es capturar con un `catch`, ver el error e imprimirlo por consola
+
+```
+if('serviceWorwer' in navigator) {
+     navigator.serviceWorker.register('/sw.js').catch(error => {
+       console.log(error.message);
+     })
+}
+```
+
+Archivo **index.js** queda de esta forma 
+
+```
+import MediaPlayer from './MediaPlayer.js'
+import AutoPlay from './plugins/AutoPlay.js'
+import AutoPause from './plugins/AutoPause.js'
+
+const video = document.querySelector('video');
+const buttonPlay = document.querySelector('#play');
+const buttonSonido = document.querySelector('#sonido');
+const player = new MediaPlayer({ movie : video,
+     plugins : [new AutoPlay(), new AutoPause()] 
+})
+
+buttonPlay.onclick = () => player.ejec()
+buttonSonido.onclick = () => player.sonido()
+
+if('serviceWorker' in navigator) {
+     navigator.serviceWorker.register('/sw.js')
+}
+```
+
+En el navegador abrir la consola para ver que esta pasando
+
+![assets-git/134.png](assets-git/134.png)
+
+En el momento de probar esta fallando y se muestra este error `Failed to load resource: the server responded with a status of 404 (Not Found)` y esta bien que el error se muestre porque el archivo **sw.js** todavia no existe.
+
+Sobre la carpeta principal del proyecto, es decir el mismo nivel en donde estan los archivos **package-lock.json** y **package.json** crear el archivo **sw.js**
+
+**Nota:** Los navegadores proporcionan herramientas como los **Dev-Tools** para trabajar con **services workers**
+
+Abrir la consola y buscar la pestaña **Apllication**, en caso que no este disponible a simple vista dar click en el boton **>>** y seleccionarla
+
+![assets-git/135.png](assets-git/135.png)
+
+A continuacion seleccionar **Services Workers** y luego dar click en **Update on reload**, los services workers se instalan, lo que hace el navegador es instalarlo en el computador del usuario.
+
+**Nota:** No es lo mismo que una aplicacion pero si va a vivir dentro del navegador
+
+![assets-git/136.png](assets-git/136.png)
+
+Cada vez que el desarrollador hace un cambio hay que volver a instalarlo. 
+
+Cuando esta en desarrollo, el desarrollador va a querer que suceda de manera automatica no con la lentitud que puede suceder en produccion por esa razon es que se habilita **Update on reload**
+
+Sobre la imagen anterior donde dice status aparece un boton en ver y dice que ya esta corriendo en el navegador
+
+Ahora se va a implementar toda la logica para poder llevar a cabo el proyecto. Para esto se va a empezar a editar **sw.js**
+
+- Escribir `self` este funciona como un `this` pero es especifico para los **services workers**; A continuacion se añade un `addEventListener('install')` -> esto se va a llamar cuando el navegador instale el **services worker** y el callback que va a llamar va a recibir un evento 
+
+```
+self.addEventListener('install', event => {
+    
+})
+```
+
+Lo primero que se va a crear es un pre-cache, el pre-cache va a tener una lista de recursos que despues se van a mantener en cache para que eventualmente en lugar de tener que ir a la red, se agarre lo que este en cache.
+
+Para hacer eso hay que hacer un `event.waitUntil` espera a que el precache se complete
+
+```
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+```
+
+A continuacion se crea la funcion precache pero para ello se va a utilizar una parte de la API del DOM que se llama caches y lo que hay que hacer es abrir un cache en especifico, como una version. La funcion va a proporcionar una instancia de un cache pero como regresa una promesa hay que utilizar async await
+
+```
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+
+async function precache() {
+    const cache = await caches.open("v1");
+}
+```
+
+Al tener la instancia de cache se van a añadir varios recursos a traves de una lista de archivos o recursos los cuales se van a almacenar en la cache del navegador.
+
+Se debe utilizar el keyword `return` porque es la promesa que esta esperando `waitUntil` para que se resuelva o se rechaze
+
+```
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+
+async function precache() {
+    const cache = await caches.open("v1");
+    return cache.addAll([
+        '/',
+        '/index.html',
+        '/assets/index.js',
+        '/assets/MediaPlayer.js',
+        '/assets/plugins/AutoPlay.js',
+        '/assets/plugins/AutoPause.js',
+        '/assets/index.css',
+        '/assets/BigBuckBunny.mp4',
+    ]);
+}
+```
+
+Al guardar esto en el navegador buscar la parte de cache y hacer click sobre **Cache Storage** donde van a aparecer esa lista de recursos.
+
+![assets-git/137.png](assets-git/137.png)
+
+Cada uno de los recursos son peticiones. Lo proximo a implementar es que cuando ocurra una peticion busque en el cache si se encuentra la respuesta 
+
+para esto hay que añadir otro addEvenListener para los fetch, es decir para las peticiones y que ocurra un evento, lo que se debe hacer es extraer la peticion a traves de `const request = event.request;`
+
+El proximo paso es que solo se va a trabajar con las peticion de tipo **get** para obtener.
+
+Se hace una condicion que indica que si el metodo de request no es igual a GET, significa que no va a pasar a nada y el request va a seguir en internet.
+
+Existe otra funcion con event que llamara a `respondWith` (responder con) para que el navegador responda a traves del cache y se pasa como parametro el metodo que se va a crear que se llama `cahedResponse()`.
+
+```
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    // get
+    if(request.method !== "GET") {
+        return;
+    }
+    // buscar en cache
+    event.respondWith(cachedResponse());
+})
+
+async function precache() {
+    const cache = await caches.open("v1")
+    return cache.addAll([
+        '/',
+        '/index.html',
+        '/assets/index.js',
+        '/assets/MediaPlayer.js',
+        '/assets/plugins/AutoPlay.js',
+        '/assets/plugins/AutoPause.js',
+        '/assets/index.css',
+        '/assets/BigBuckBunny.mp4',
+    ]);
+}
+```
+
+A continuacion de precache se implementa el metodo `cahedResponse()` al cual se le pasa como parametro el `request`
+
+Lo primero que se hace es abrir el cache con `caches.open`
+
+```
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    // get
+    if(request.method !== "GET") {
+        return;
+    }
+    // buscar en cache
+    event.respondWith(cachedResponse(request));
+});
+
+async function precache() {
+    const cache = await caches.open("v1")
+    return cache.addAll([
+        '/',
+        '/index.html',
+        '/assets/index.js',
+        '/assets/MediaPlayer.js',
+        '/assets/plugins/AutoPlay.js',
+        '/assets/plugins/AutoPause.js',
+        '/assets/index.css',
+        '/assets/BigBuckBunny.mp4',
+    ]);
+}
+
+async function cachedResponse (request) {
+    const cache = await caches.open("v1");
+}
+```
+
+Como se esta utilizando `"v1"` dos veces se ,puede crear una constante que la guarde `const VERSION = "v1"` y se cambia en todas las partes donde este `"v1"`.
+
+Despues de esto hay que verificar a traves de response si ya tiene una copia que le corresponda a request, en el caso que no regresara a traves de response un `undefined` pero en el caso de que eso suceda hay que contestar con la peticion de la red porque no se encuentra en cache `fetch(request)`.
+
+**Nota:** Si esto `return response // || fetch(request);` quedara de esa forma y se solicita un archivo que no esta cacheado, nunca se va a obtener el recurso porque estaria contestando undefined
+
+```
+const VERSION = 'v1';
+
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  // get
+  if(request.method !== 'GET') {
+      return;
+  }
+  // buscar en cache
+  event.respondWith(cachedResponse(request));
+});
+
+async function precache() {
+  const cache = await caches.open(VERSION);
+  return cache.addAll([
+      '/',
+      '/index.html',
+      '/assets/index.js',
+      '/assets/MediaPlayer.js',
+      '/assets/plugins/AutoPlay.js',
+      '/assets/plugins/AutoPause.js',
+      '/assets/index.css',
+      '/assets/BigBuckBunny.mp4',
+  ]);
+}
+
+async function cachedResponse(request) {
+    const cache = await caches.open(VERSION);
+    const response = await cache.match(request);
+    return response || fetch(request);
+}
+```
+
+En el navegador pasar a la pestaña **Network** y verificar que es todo lo que aparece en la columna size
+
+![assets-git/138.png](assets-git/138.png)
+
+Despues refrescar el navegador con **F5** y verificar que todo esta en **services worker**
+
+![assets-git/139.png](assets-git/139.png)
+
+Esto quiere decir que **services worker** ya tiene una copia en cache, lo que significa que es que en modo offline ya se puede trabajar con esas copias que estan en cache
+
+para hacerlo devolverse a la pestaña **Application** y ahora dar click en **Offline** para simular que se perdio la conexion y nuevamente refrescar el navegador con **F5**, y verificar que todo este funcionando correctamente
+
+![assets-git/140.png](assets-git/140.png)
+
+Falta hacer una funcion mas para que actualice el cache en el caso de que algun recurso cambie de nombre y por ejemplo el usuario siempre este viendo el mismo recurso y no el actualizado.
+
+Se va a implementar catch and network.
+
+Primero se va a buscar en cache, luego ir al network y actualizar el cache 
+
+lo que se va a hacer es crear otro evento waitUntil y luego crear el metodo updatedCache que tambien va a recibir un request
+
+```
+  // actualizar el cache
+  event.waitUntil(updateCache(request));
+```
+
+Luego se crea el metodo updateCache
+
+con response de busca la copia actualizada `const response = await fetch(request)` y se regresa con `cache.put()` añadiendo nuevo contenido a la cache donde con la llave `request` se guarda el valor de `response`
+
+```
+async function updateCached(request) {
+    const cache = await caches.open(VERSION);
+    const response = await fetch(request);
+    return cache.put(req, response);
+}
+```
+
+El archivo finalmente queda de esta forma
+
+```
+const VERSION = 'v1';
+
+self.addEventListener('install', event => {
+  event.waitUntil(precache());
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  // get
+  if(request.method !== 'GET') {
+      return;
+  }
+  // buscar en cache
+  event.respondWith(cachedResponse(request));
+
+  // actualizar el cache
+  event.waitUntil(updateCache(request));
+});
+
+async function precache() {
+  const cache = await caches.open(VERSION);
+  return cache.addAll([
+      '/',
+      '/index.html',
+      '/assets/index.js',
+      '/assets/MediaPlayer.js',
+      '/assets/plugins/AutoPlay.js',
+      '/assets/plugins/AutoPause.js',
+      '/assets/index.css',
+      '/assets/BigBuckBunny.mp4',
+  ]);
+}
+
+async function cachedResponse(request) {
+    const cache = await caches.open(VERSION);
+    const response = await cache.match(request);
+    return response || fetch(request);
+}
+
+async function updateCache(request) {
+    const cache = await caches.open(VERSION);
+    const response = await fetch(request);
+    return cache.put(req, response);
+}
+```
+
+Se desactiva la casilla offline y nuevamente dirigir a Network y verificar que ahora hay mas peticiones
+
+![assets-git/141.png](assets-git/141.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
